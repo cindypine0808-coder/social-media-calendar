@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>蕾蕾working space · Content Calendar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=clickup5" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="masthead">
+        <div class="brand">
+          <p class="kicker">ClickUp · 蕾蕾working space</p>
+          <h1>Content Calendar</h1>
+          <p class="lede">
+            10 social posts from ClickUp. Check each post title, Target, and Post Target.
+            Filter by shooting, submission, and publish date.
+            <span class="muted" id="sync-status">Source: ClickUp subtasks</span>
+          </p>
+        </div>
+        <div class="stats" id="stats"></div>
+      </header>
+
+      <section class="toolbar">
+        <div class="month-nav" id="month-nav">
+          <button type="button" class="nav-btn" id="prev-month" aria-label="Previous month">
+            ‹
+          </button>
+          <h2 id="month-label"></h2>
+          <button type="button" class="nav-btn" id="next-month" aria-label="Next month">
+            ›
+          </button>
+          <button type="button" class="today-btn" id="today">Today</button>
+        </div>
+
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <button type="button" class="view-btn active" data-view="calendar" id="view-calendar">
+            Calendar
+          </button>
+          <button type="button" class="view-btn" data-view="table" id="view-table">
+            Post titles
+          </button>
+        </div>
+      </section>
+
+      <section class="filters-bar">
+        <div class="filter-group">
+          <span class="filter-label">Show dates</span>
+          <div class="date-toggles" role="group" aria-label="Date type filters">
+            <button type="button" class="date-toggle active" data-phase="shooting" id="toggle-shooting">
+              <i class="dot shooting"></i>Shooting Date
+            </button>
+            <button type="button" class="date-toggle active" data-phase="submission" id="toggle-submission">
+              <i class="dot submission"></i>Submission Date
+            </button>
+            <button type="button" class="date-toggle active" data-phase="publish" id="toggle-publish">
+              <i class="dot publish"></i>Publish Date
+            </button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <label class="filter">
+            <span>Target</span>
+            <select id="filter-target">
+              <option value="all">All targets</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Post Target</span>
+            <select id="filter-post-target">
+              <option value="all">All post targets</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Status</span>
+            <select id="filter-status">
+              <option value="all">All status</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <div class="legend">
+        <span class="legend-item"><i class="dot shooting"></i>Shooting Date</span>
+        <span class="legend-item"><i class="dot submission"></i>Submission Date</span>
+        <span class="legend-item"><i class="dot publish"></i>Publish Date</span>
+        <span class="legend-note">Posts without a shooting date hide when only Shooting is selected.</span>
+      </div>
+
+      <main class="layout" id="calendar-layout">
+        <section class="calendar-wrap">
+          <div class="weekday-row" id="weekdays"></div>
+          <div class="calendar" id="calendar"></div>
+        </section>
+
+        <aside class="rail">
+          <section class="panel">
+            <h3>Post titles</h3>
+            <ol class="agenda post-list" id="post-list"></ol>
+          </section>
+          <section class="panel">
+            <h3>This month</h3>
+            <ol class="agenda" id="agenda"></ol>
+          </section>
+        </aside>
+      </main>
+
+      <section class="table-wrap" id="table-layout" hidden>
+        <div class="panel table-panel">
+          <h3>All posts</h3>
+          <div class="table-scroll">
+            <table class="posts-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Target</th>
+                  <th>Post Target</th>
+                  <th>Shooting</th>
+                  <th>Submission</th>
+                  <th>Publish</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="posts-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="drawer-backdrop" id="backdrop" hidden></div>
+    <aside class="drawer" id="drawer" hidden>
+      <button type="button" class="drawer-close" id="drawer-close">Close</button>
+      <div id="drawer-body"></div>
+    </aside>
+
+    <script src="data.js?v=clickup5"></script>
+    <script src="app.js?v=clickup5"></script>
+  </body>
+</html>
