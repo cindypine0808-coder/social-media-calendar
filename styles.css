@@ -8,6 +8,11 @@
   --shooting: #c9a227;
   --submission: #d36b3a;
   --publish: #e8e2d6;
+  --class: #c9a227;
+  --awareness: #8aa8c2;
+  --authority: #b59ad4;
+  --urgency: #c45c4a;
+  --proof: #7ea37a;
   --ip: #d4a574;
   --studio: #7ea37a;
   --brand: #8aa8c2;
@@ -46,7 +51,7 @@ body {
 
 .masthead {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
   gap: 32px;
   align-items: end;
   padding-bottom: 28px;
@@ -189,16 +194,16 @@ h1 {
   background: #2a241e;
 }
 
-.date-toggle[data-phase="shooting"].active {
-  border-color: var(--shooting);
-}
-
 .date-toggle[data-phase="submission"].active {
   border-color: var(--submission);
 }
 
 .date-toggle[data-phase="publish"].active {
   border-color: var(--publish);
+}
+
+.date-toggle[data-phase="class"].active {
+  border-color: var(--class);
 }
 
 .legend-note {
@@ -247,16 +252,17 @@ h1 {
   min-width: 180px;
 }
 
-.posts-table .date-shooting {
-  color: var(--shooting);
-}
-
 .posts-table .date-submission {
   color: var(--submission);
 }
 
 .posts-table .date-publish {
   color: var(--publish);
+}
+
+.posts-table .hook-cell {
+  color: #d8cfc3;
+  max-width: 280px;
 }
 
 .posts-table .muted-cell {
@@ -386,10 +392,6 @@ select {
   border-radius: 50%;
 }
 
-.dot.shooting {
-  background: var(--shooting);
-}
-
 .dot.submission {
   background: var(--submission);
 }
@@ -398,29 +400,33 @@ select {
   background: var(--publish);
 }
 
-.swatch.ip,
-.mark.ip {
-  background: var(--ip);
+.dot.class {
+  background: var(--class);
 }
 
-.swatch.studio,
-.mark.studio {
-  background: var(--studio);
+.swatch.awareness,
+.mark.awareness {
+  background: var(--awareness);
 }
 
-.swatch.brand,
-.mark.brand {
-  background: var(--brand);
+.swatch.authority,
+.mark.authority {
+  background: var(--authority);
 }
 
-.swatch.hyrox,
-.mark.hyrox {
-  background: var(--hyrox);
+.swatch.urgency,
+.mark.urgency {
+  background: var(--urgency);
 }
 
-.swatch.mixed,
-.mark.mixed {
-  background: var(--mixed);
+.swatch.proof,
+.mark.proof {
+  background: var(--proof);
+}
+
+.swatch.class,
+.mark.class {
+  background: var(--class);
 }
 
 .layout {
@@ -520,16 +526,16 @@ select {
   width: 6px;
 }
 
-.chip.shooting {
-  border-left-color: var(--shooting);
-}
-
 .chip.submission {
   border-left-color: var(--submission);
 }
 
 .chip.publish {
   border-left-color: var(--publish);
+}
+
+.chip.class {
+  border-left-color: var(--class);
 }
 
 .chip .label {
@@ -709,7 +715,7 @@ select {
   line-height: 1.5;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   .masthead,
   .layout {
     grid-template-columns: 1fr;
