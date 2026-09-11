@@ -1,17 +1,16 @@
 const WEEKDAYS = ["一", "二", "三", "四", "五", "六", "日"];
 const PHASES = [
-  { key: "shooting", label: "拍攝日" },
   { key: "submission", label: "交片日" },
   { key: "publish", label: "發佈日" },
 ];
 
 const TODAY = new Date();
-const PHASE_ORDER = { publish: 0, submission: 1, shooting: 2 };
+const PHASE_ORDER = { publish: 0, submission: 1 };
 const state = {
   year: TODAY.getFullYear(),
   month: TODAY.getMonth(),
   view: "calendar",
-  phases: new Set(["shooting", "submission", "publish"]),
+  phases: new Set(["submission", "publish"]),
   target: "all",
   postTarget: "all",
   status: "all",
@@ -156,12 +155,12 @@ function renderAll() {
 
 function renderStats() {
   const posts = PLAN.posts;
-  const shooting = posts.filter((post) => post.shooting).length;
   const inProgress = posts.filter((post) => post.status === "in progress").length;
+  const todo = posts.filter((post) => post.status === "to do").length;
   document.getElementById("stats").innerHTML = `
     <div class="stat"><b>${posts.length}</b><span>Posts</span></div>
     <div class="stat"><b>${inProgress}</b><span>In progress</span></div>
-    <div class="stat"><b>${shooting}</b><span>有拍攝日</span></div>
+    <div class="stat"><b>${todo}</b><span>To do</span></div>
   `;
   document.getElementById("sync-status").textContent = PLAN.source;
 }
@@ -193,7 +192,7 @@ function renderTable() {
   const body = document.getElementById("posts-table-body");
   const posts = filteredPosts();
   if (!posts.length) {
-    body.innerHTML = `<tr><td colspan="8" class="empty">沒有符合篩選的 posts。</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" class="empty">沒有符合篩選的 posts。</td></tr>`;
     return;
   }
 
@@ -205,7 +204,6 @@ function renderTable() {
         <td class="title-cell">《${escapeHtml(post.title)}》</td>
         <td>${escapeHtml(post.target)}</td>
         <td>${escapeHtml(post.postTarget)}</td>
-        <td class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
         <td class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
         <td class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
         <td>${escapeHtml(post.status)}</td>
@@ -336,7 +334,6 @@ function openDrawer(postId) {
     <div class="timeline">
       <div><span>Target</span><b>${escapeHtml(post.target)}</b></div>
       <div><span>Post Target</span><b>${escapeHtml(post.postTarget)}</b></div>
-      ${dateRow("拍攝日", post.shooting)}
       ${dateRow("交片日", post.submission)}
       ${dateRow("發佈日", post.publish)}
     </div>

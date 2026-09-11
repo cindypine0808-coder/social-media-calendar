@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=week2" />
+    <link rel="stylesheet" href="styles.css?v=noshoot" />
   </head>
   <body>
     <div class="app">
@@ -19,7 +19,7 @@
           <p class="kicker">ClickUp · 蕾蕾working space</p>
           <h1>Content Calendar</h1>
           <p class="lede">
-            10 個 subtasks。可篩選拍攝日、交片日、發佈日，以及 Target / Post Target。
+            10 個 subtasks。可篩選交片日、發佈日，以及 Target / Post Target。
             <span class="muted" id="sync-status">Source: ClickUp subtasks</span>
           </p>
         </div>
@@ -52,9 +52,6 @@
         <div class="filter-group">
           <span class="filter-label">顯示日期</span>
           <div class="date-toggles" role="group" aria-label="Date type filters">
-            <button type="button" class="date-toggle active" data-phase="shooting" id="toggle-shooting">
-              <i class="dot shooting"></i>拍攝日
-            </button>
             <button type="button" class="date-toggle active" data-phase="submission" id="toggle-submission">
               <i class="dot submission"></i>交片日
             </button>
@@ -87,10 +84,9 @@
       </section>
 
       <div class="legend">
-        <span class="legend-item"><i class="dot shooting"></i>拍攝日 Shooting</span>
         <span class="legend-item"><i class="dot submission"></i>交片日 Submission</span>
         <span class="legend-item"><i class="dot publish"></i>發佈日 Publish</span>
-        <span class="legend-note">只有 post 9、10 有拍攝日；post 8 交片日 TBC</span>
+        <span class="legend-note">post 8 交片日 TBC</span>
       </div>
 
       <main class="layout" id="calendar-layout">
@@ -122,7 +118,6 @@
                   <th>Title</th>
                   <th>Target</th>
                   <th>Post Target</th>
-                  <th>拍攝日</th>
                   <th>交片日</th>
                   <th>發佈日</th>
                   <th>Status</th>
@@ -141,7 +136,7 @@
       <div id="drawer-body"></div>
     </aside>
 
-    <script src="data.js?v=week2"></script>
-    <script src="app.js?v=week2"></script>
+    <script src="data.js?v=noshoot"></script>
+    <script src="app.js?v=noshoot"></script>
   </body>
 </html>
