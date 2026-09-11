@@ -206,6 +206,14 @@ h1 {
   border-color: var(--class);
 }
 
+.date-toggle[data-phase="shooting"].active {
+  border-color: var(--shooting);
+}
+
+.posts-table .date-shooting {
+  color: var(--shooting);
+}
+
 .legend-note {
   color: #6f675c;
   font-size: 12px;

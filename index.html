@@ -3,24 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NSCA Reels Calendar · SSF</title>
+    <title>蕾蕾working space · Content Calendar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=nsca4" />
+    <link rel="stylesheet" href="styles.css?v=clickup6" />
   </head>
   <body>
     <div class="app">
       <header class="masthead">
         <div class="brand">
-          <p class="kicker">SSF · NSCA Campaign 2026</p>
-          <h1>Reels Calendar</h1>
+          <p class="kicker">ClickUp · 蕾蕾working space</p>
+          <h1>Content Calendar</h1>
           <p class="lede">
-            10 條 Reels，分 4 個階段。日曆同時顯示交片日同發佈日，方便對進度同對外檔期。
-            <span class="muted" id="sync-status">Source: NSCA Project Reels Plan 階段 1–4</span>
+            10 個 subtasks。可篩選拍攝日、交片日、發佈日，以及 Target / Post Target。
+            <span class="muted" id="sync-status">Source: ClickUp subtasks</span>
           </p>
         </div>
         <div class="stats" id="stats"></div>
@@ -52,37 +52,45 @@
         <div class="filter-group">
           <span class="filter-label">顯示日期</span>
           <div class="date-toggles" role="group" aria-label="Date type filters">
+            <button type="button" class="date-toggle active" data-phase="shooting" id="toggle-shooting">
+              <i class="dot shooting"></i>拍攝日
+            </button>
             <button type="button" class="date-toggle active" data-phase="submission" id="toggle-submission">
               <i class="dot submission"></i>交片日
             </button>
             <button type="button" class="date-toggle active" data-phase="publish" id="toggle-publish">
               <i class="dot publish"></i>發佈日
             </button>
-            <button type="button" class="date-toggle active" data-phase="class" id="toggle-class">
-              <i class="dot class"></i>上課日
-            </button>
           </div>
         </div>
 
         <div class="filters">
           <label class="filter">
-            <span>階段</span>
-            <select id="filter-stage">
-              <option value="all">全部階段</option>
+            <span>Target</span>
+            <select id="filter-target">
+              <option value="all">All targets</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Post Target</span>
+            <select id="filter-post-target">
+              <option value="all">All post targets</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Status</span>
+            <select id="filter-status">
+              <option value="all">All status</option>
             </select>
           </label>
         </div>
       </section>
 
       <div class="legend">
+        <span class="legend-item"><i class="dot shooting"></i>拍攝日 Shooting</span>
         <span class="legend-item"><i class="dot submission"></i>交片日 Submission</span>
         <span class="legend-item"><i class="dot publish"></i>發佈日 Publish</span>
-        <span class="legend-item"><i class="dot class"></i>上課日 6 Nov</span>
-        <span class="legend-item"><i class="swatch awareness"></i>階段 1 Awareness</span>
-        <span class="legend-item"><i class="swatch authority"></i>階段 2 Authority</span>
-        <span class="legend-item"><i class="swatch urgency"></i>階段 3 Urgency</span>
-        <span class="legend-item"><i class="swatch proof"></i>階段 4 Proof</span>
-        <span class="legend-note">10 月 15 日：Reels 5 發佈 + Reels 6 交片</span>
+        <span class="legend-note">只有 post 9、10 有拍攝日；post 8 交片日 TBC</span>
       </div>
 
       <main class="layout" id="calendar-layout">
@@ -93,7 +101,7 @@
 
         <aside class="rail">
           <section class="panel">
-            <h3>發佈順序</h3>
+            <h3>Post titles</h3>
             <ol class="agenda post-list" id="post-list"></ol>
           </section>
           <section class="panel">
@@ -105,17 +113,19 @@
 
       <section class="table-wrap" id="table-layout" hidden>
         <div class="panel table-panel">
-          <h3>10 條 Reels 排程</h3>
+          <h3>10 個 ClickUp subtasks</h3>
           <div class="table-scroll">
             <table class="posts-table">
               <thead>
                 <tr>
-                  <th>Reels</th>
+                  <th>#</th>
                   <th>Title</th>
-                  <th>階段</th>
+                  <th>Target</th>
+                  <th>Post Target</th>
+                  <th>拍攝日</th>
                   <th>交片日</th>
                   <th>發佈日</th>
-                  <th>Hook</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody id="posts-table-body"></tbody>
@@ -131,7 +141,7 @@
       <div id="drawer-body"></div>
     </aside>
 
-    <script src="data.js?v=nsca4"></script>
-    <script src="app.js?v=nsca4"></script>
+    <script src="data.js?v=clickup6"></script>
+    <script src="app.js?v=clickup6"></script>
   </body>
 </html>

@@ -1,18 +1,20 @@
 const WEEKDAYS = ["一", "二", "三", "四", "五", "六", "日"];
 const PHASES = [
+  { key: "shooting", label: "拍攝日" },
   { key: "submission", label: "交片日" },
   { key: "publish", label: "發佈日" },
-  { key: "class", label: "上課日" },
 ];
 
 const TODAY = new Date();
-const PHASE_ORDER = { publish: 0, submission: 1, class: 2 };
+const PHASE_ORDER = { publish: 0, submission: 1, shooting: 2 };
 const state = {
   year: TODAY.getFullYear(),
   month: TODAY.getMonth(),
   view: "calendar",
-  phases: new Set(["submission", "publish", "class"]),
-  stage: "all",
+  phases: new Set(["shooting", "submission", "publish"]),
+  target: "all",
+  postTarget: "all",
+  status: "all",
 };
 
 function parseDate(iso) {
@@ -52,12 +54,12 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-function stageClass(stageKey) {
-  if (stageKey === "authority") return "authority";
-  if (stageKey === "urgency") return "urgency";
-  if (stageKey === "proof") return "proof";
-  if (stageKey === "class") return "class";
-  return "awareness";
+function targetClass(target) {
+  if (target.includes("Group Class")) return "hyrox";
+  if (target.includes("Studio")) return "studio";
+  if (target.includes("IP Development") && target.includes("Brand")) return "mixed";
+  if (target.includes("IP Development")) return "ip";
+  return "brand";
 }
 
 function unique(values) {
@@ -69,35 +71,21 @@ function activePhases() {
 }
 
 function sortedPosts(posts) {
-  return [...posts].sort(
-    (a, b) => a.publish.localeCompare(b.publish) || a.number - b.number
-  );
+  return [...posts].sort((a, b) => a.number - b.number);
 }
 
 function filteredPosts() {
   return sortedPosts(PLAN.posts).filter((post) => {
-    if (state.stage !== "all" && post.stage !== state.stage) return false;
+    if (state.target !== "all" && post.target !== state.target) return false;
+    if (state.postTarget !== "all" && post.postTarget !== state.postTarget) return false;
+    if (state.status !== "all" && post.status !== state.status) return false;
     if (!activePhases().some((phase) => post[phase.key])) return false;
     return true;
   });
 }
 
-function milestoneEvents() {
-  if (!state.phases.has("class")) return [];
-  return (PLAN.milestones || []).map((item) => ({
-    ...item,
-    number: "",
-    stage: "上課日",
-    stageKey: "class",
-    stageName: item.title,
-    phase: "class",
-    phaseLabel: "上課日",
-    isMilestone: true,
-  }));
-}
-
 function eventsForPosts(posts) {
-  const postEvents = posts
+  return posts
     .flatMap((post) =>
       activePhases()
         .filter((phase) => post[phase.key])
@@ -106,7 +94,6 @@ function eventsForPosts(posts) {
           phase: phase.key,
           phaseLabel: phase.label,
           date: post[phase.key],
-          isMilestone: false,
         }))
     )
     .sort(
@@ -115,13 +102,6 @@ function eventsForPosts(posts) {
         PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] ||
         a.number - b.number
     );
-
-  return [...postEvents, ...milestoneEvents()].sort(
-    (a, b) =>
-      a.date.localeCompare(b.date) ||
-      PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] ||
-      (a.number || 0) - (b.number || 0)
-  );
 }
 
 function fillSelect(id, values) {
@@ -142,10 +122,12 @@ function fillSelect(id, values) {
 }
 
 function populateFilters() {
+  fillSelect("filter-target", unique(PLAN.posts.map((post) => post.target).filter(Boolean)));
   fillSelect(
-    "filter-stage",
-    unique(PLAN.posts.map((post) => post.stage).filter(Boolean))
+    "filter-post-target",
+    unique(PLAN.posts.map((post) => post.postTarget).filter(Boolean))
   );
+  fillSelect("filter-status", unique(PLAN.posts.map((post) => post.status).filter(Boolean)));
 }
 
 function updateViewVisibility() {
@@ -174,21 +156,21 @@ function renderAll() {
 
 function renderStats() {
   const posts = PLAN.posts;
-  const firstPublish = sortedPosts(posts)[0]?.publish;
+  const shooting = posts.filter((post) => post.shooting).length;
+  const inProgress = posts.filter((post) => post.status === "in progress").length;
   document.getElementById("stats").innerHTML = `
-    <div class="stat"><b>${posts.length}</b><span>Reels</span></div>
-    <div class="stat"><b>4</b><span>階段</span></div>
-    <div class="stat"><b>${escapeHtml(formatShort(PLAN.courseStart))}</b><span>上課日</span></div>
+    <div class="stat"><b>${posts.length}</b><span>Posts</span></div>
+    <div class="stat"><b>${inProgress}</b><span>In progress</span></div>
+    <div class="stat"><b>${shooting}</b><span>有拍攝日</span></div>
   `;
-  document.getElementById("sync-status").textContent =
-    `${PLAN.source} · 首發 ${formatShort(firstPublish)}`;
+  document.getElementById("sync-status").textContent = PLAN.source;
 }
 
 function renderPostList() {
   const list = document.getElementById("post-list");
   const posts = filteredPosts();
   if (!posts.length) {
-    list.innerHTML = `<li class="empty">沒有符合篩選的 Reels。</li>`;
+    list.innerHTML = `<li class="empty">沒有符合篩選的 posts。</li>`;
     return;
   }
 
@@ -197,9 +179,9 @@ function renderPostList() {
       (post) => `
       <li>
         <button type="button" data-id="${post.id}">
-          <time>Reels ${escapeHtml(String(post.number))} · ${escapeHtml(post.stage)}</time>
-          <div class="name">${escapeHtml(post.title)}</div>
-          <div class="sub"><strong>發佈</strong> ${escapeHtml(formatShort(post.publish))}</div>
+          <time>${escapeHtml(String(post.number).padStart(2, "0"))} · ${escapeHtml(post.status)}</time>
+          <div class="name">《${escapeHtml(post.title)}》</div>
+          <div class="sub">${escapeHtml(post.target)} · ${escapeHtml(post.postTarget)}</div>
         </button>
       </li>
     `
@@ -211,7 +193,7 @@ function renderTable() {
   const body = document.getElementById("posts-table-body");
   const posts = filteredPosts();
   if (!posts.length) {
-    body.innerHTML = `<tr><td colspan="6" class="empty">沒有符合篩選的 Reels。</td></tr>`;
+    body.innerHTML = `<tr><td colspan="8" class="empty">沒有符合篩選的 posts。</td></tr>`;
     return;
   }
 
@@ -220,11 +202,13 @@ function renderTable() {
       (post) => `
       <tr data-id="${post.id}" class="clickable-row">
         <td>${escapeHtml(String(post.number))}</td>
-        <td class="title-cell">${escapeHtml(post.title)}</td>
-        <td>${escapeHtml(post.stage)} · ${escapeHtml(post.stageEn)}</td>
+        <td class="title-cell">《${escapeHtml(post.title)}》</td>
+        <td>${escapeHtml(post.target)}</td>
+        <td>${escapeHtml(post.postTarget)}</td>
+        <td class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
         <td class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
         <td class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
-        <td class="hook-cell">${escapeHtml(post.hook)}</td>
+        <td>${escapeHtml(post.status)}</td>
       </tr>
     `
     )
@@ -278,13 +262,9 @@ function renderCalendar() {
               .map(
                 (event) => `
               <button class="chip ${event.phase}" data-id="${event.id}" type="button">
-                <span class="mark ${stageClass(event.stageKey)}"></span>
+                <span class="mark ${targetClass(event.target)}"></span>
                 <span>
-                  <span class="label">${
-                    event.isMilestone
-                      ? escapeHtml(event.title)
-                      : `R${escapeHtml(String(event.number))} ${escapeHtml(event.title)}`
-                  }</span>
+                  <span class="label">${escapeHtml(String(event.number))}. ${escapeHtml(event.title)}</span>
                   <span class="meta">${escapeHtml(event.phaseLabel)}</span>
                 </span>
               </button>
@@ -323,12 +303,8 @@ function renderAgenda(events) {
       <li>
         <button type="button" data-id="${event.id}">
           <time>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}</time>
-          <div class="name">${
-            event.isMilestone
-              ? escapeHtml(event.title)
-              : `Reels ${escapeHtml(String(event.number))} · ${escapeHtml(event.title)}`
-          }</div>
-          <div class="sub">${escapeHtml(event.stageName || event.stage)}</div>
+          <div class="name">${escapeHtml(String(event.number))}. 《${escapeHtml(event.title)}》</div>
+          <div class="sub">${escapeHtml(event.target)}</div>
         </button>
       </li>
     `
@@ -343,51 +319,32 @@ function showDrawer(html) {
 }
 
 function dateRow(label, value) {
-  return `<div><span>${escapeHtml(label)}</span><b>${value ? formatLong(value) : "TBC"}</b></div>`;
-}
-
-function openMilestone(id) {
-  const item = (PLAN.milestones || []).find((entry) => entry.id === id);
-  if (!item) return;
-
-  showDrawer(`
-    <p class="kicker">Milestone</p>
-    <h2>${escapeHtml(item.title)}</h2>
-    <div class="pills">
-      <span class="pill">上課日</span>
-    </div>
-    <div class="timeline">
-      ${dateRow("日期", item.date)}
-    </div>
-    <p class="remarks">${escapeHtml(item.note)}</p>
-  `);
+  return `<div><span>${escapeHtml(label)}</span><b>${value ? formatLong(value) : "TBC / none"}</b></div>`;
 }
 
 function openDrawer(postId) {
-  const milestone = (PLAN.milestones || []).find((item) => item.id === postId);
-  if (milestone) {
-    openMilestone(postId);
-    return;
-  }
-
   const post = PLAN.posts.find((item) => item.id === postId);
   if (!post) return;
 
   showDrawer(`
-    <p class="kicker">Reels ${escapeHtml(String(post.number))} · ${escapeHtml(post.stage)}</p>
-    <h2>${escapeHtml(post.title)}</h2>
+    <p class="kicker">Post ${escapeHtml(String(post.number))} · ${escapeHtml(post.status)}</p>
+    <h2>《${escapeHtml(post.title)}》</h2>
     <div class="pills">
-      <span class="pill">${escapeHtml(post.stage)}</span>
-      <span class="pill">${escapeHtml(post.stageEn)}</span>
+      <span class="pill">${escapeHtml(post.status)}</span>
+      <span class="pill">${escapeHtml(post.target)}</span>
     </div>
     <div class="timeline">
-      <div><span>階段</span><b>${escapeHtml(post.stageName)}</b></div>
-      <div><span>方向性目標</span><b>${escapeHtml(post.target)}</b></div>
-      <div><span>主要目的</span><b>${escapeHtml(post.purpose)}</b></div>
-      <div><span>Hook</span><b>${escapeHtml(post.hook)}</b></div>
+      <div><span>Target</span><b>${escapeHtml(post.target)}</b></div>
+      <div><span>Post Target</span><b>${escapeHtml(post.postTarget)}</b></div>
+      ${dateRow("拍攝日", post.shooting)}
       ${dateRow("交片日", post.submission)}
       ${dateRow("發佈日", post.publish)}
     </div>
+    ${
+      post.url
+        ? `<p class="remarks"><a href="${escapeHtml(post.url)}" target="_blank" rel="noreferrer">Open in ClickUp</a></p>`
+        : ""
+    }
   `);
 }
 
@@ -405,12 +362,8 @@ function openDay(dateKey) {
         <li>
           <button type="button" data-id="${event.id}">
             <time>${escapeHtml(event.phaseLabel)}</time>
-            <div class="name">${
-              event.isMilestone
-                ? escapeHtml(event.title)
-                : `Reels ${escapeHtml(String(event.number))} · ${escapeHtml(event.title)}`
-            }</div>
-            <div class="sub">${escapeHtml(event.stageName || event.stage)}</div>
+            <div class="name">${escapeHtml(String(event.number))}. 《${escapeHtml(event.title)}》</div>
+            <div class="sub">${escapeHtml(event.target)} · ${escapeHtml(event.status)}</div>
           </button>
         </li>
       `
@@ -467,8 +420,16 @@ function bind() {
     });
   });
 
-  document.getElementById("filter-stage").addEventListener("change", (event) => {
-    state.stage = event.target.value;
+  document.getElementById("filter-target").addEventListener("change", (event) => {
+    state.target = event.target.value;
+    renderAll();
+  });
+  document.getElementById("filter-post-target").addEventListener("change", (event) => {
+    state.postTarget = event.target.value;
+    renderAll();
+  });
+  document.getElementById("filter-status").addEventListener("change", (event) => {
+    state.status = event.target.value;
     renderAll();
   });
 
@@ -482,10 +443,6 @@ function bind() {
       return;
     }
     if (target.dataset.id) {
-      openDrawer(target.dataset.id);
-      return;
-    }
-    if (target.classList.contains("clickable-row") && target.dataset.id) {
       openDrawer(target.dataset.id);
       return;
     }
