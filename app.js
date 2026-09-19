@@ -1,18 +1,18 @@
 const WEEKDAYS = ["一", "二", "三", "四", "五", "六", "日"];
 const PHASES = [
+  { key: "shooting", label: "拍攝日" },
   { key: "submission", label: "交片日" },
   { key: "publish", label: "發佈日" },
-  { key: "class", label: "上課日" },
 ];
 
 const TODAY = new Date();
-const PHASE_ORDER = { publish: 0, submission: 1, class: 2 };
+const PHASE_ORDER = { publish: 0, submission: 1, shooting: 2 };
 const state = {
   year: TODAY.getFullYear(),
   month: TODAY.getMonth(),
   view: "calendar",
-  phases: new Set(["submission", "publish", "class"]),
-  stage: "all",
+  phases: new Set(["shooting", "submission", "publish"]),
+  campaigns: new Set(["01", "02"]),
 };
 
 function parseDate(iso) {
@@ -52,16 +52,12 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-function stageClass(stageKey) {
-  if (stageKey === "authority") return "authority";
-  if (stageKey === "urgency") return "urgency";
-  if (stageKey === "proof") return "proof";
-  if (stageKey === "class") return "class";
-  return "awareness";
+function campaignClass(campaign) {
+  return campaign === "02" ? "nsca" : "ssf";
 }
 
-function unique(values) {
-  return [...new Set(values)];
+function postLabel(post) {
+  return `${post.campaign} R${post.number}`;
 }
 
 function activePhases() {
@@ -69,35 +65,23 @@ function activePhases() {
 }
 
 function sortedPosts(posts) {
-  return [...posts].sort(
-    (a, b) => a.publish.localeCompare(b.publish) || a.number - b.number
-  );
+  return [...posts].sort((a, b) => {
+    const aDate = a.publish || a.submission || a.shooting || "9999-99-99";
+    const bDate = b.publish || b.submission || b.shooting || "9999-99-99";
+    return aDate.localeCompare(bDate) || a.campaign.localeCompare(b.campaign) || a.number - b.number;
+  });
 }
 
 function filteredPosts() {
   return sortedPosts(PLAN.posts).filter((post) => {
-    if (state.stage !== "all" && post.stage !== state.stage) return false;
+    if (!state.campaigns.has(post.campaign)) return false;
     if (!activePhases().some((phase) => post[phase.key])) return false;
     return true;
   });
 }
 
-function milestoneEvents() {
-  if (!state.phases.has("class")) return [];
-  return (PLAN.milestones || []).map((item) => ({
-    ...item,
-    number: "",
-    stage: "上課日",
-    stageKey: "class",
-    stageName: item.title,
-    phase: "class",
-    phaseLabel: "上課日",
-    isMilestone: true,
-  }));
-}
-
 function eventsForPosts(posts) {
-  const postEvents = posts
+  return posts
     .flatMap((post) =>
       activePhases()
         .filter((phase) => post[phase.key])
@@ -106,46 +90,15 @@ function eventsForPosts(posts) {
           phase: phase.key,
           phaseLabel: phase.label,
           date: post[phase.key],
-          isMilestone: false,
         }))
     )
     .sort(
       (a, b) =>
         a.date.localeCompare(b.date) ||
         PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] ||
+        a.campaign.localeCompare(b.campaign) ||
         a.number - b.number
     );
-
-  return [...postEvents, ...milestoneEvents()].sort(
-    (a, b) =>
-      a.date.localeCompare(b.date) ||
-      PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] ||
-      (a.number || 0) - (b.number || 0)
-  );
-}
-
-function fillSelect(id, values) {
-  const select = document.getElementById(id);
-  const current = select.value;
-  const keep = select.querySelector("option");
-  select.innerHTML = "";
-  select.appendChild(keep);
-  values.forEach((value) => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = value;
-    select.appendChild(option);
-  });
-  if ([...select.options].some((option) => option.value === current)) {
-    select.value = current;
-  }
-}
-
-function populateFilters() {
-  fillSelect(
-    "filter-stage",
-    unique(PLAN.posts.map((post) => post.stage).filter(Boolean))
-  );
 }
 
 function updateViewVisibility() {
@@ -164,7 +117,6 @@ function updateViewVisibility() {
 }
 
 function renderAll() {
-  populateFilters();
   updateViewVisibility();
   renderStats();
   renderPostList();
@@ -173,15 +125,14 @@ function renderAll() {
 }
 
 function renderStats() {
-  const posts = PLAN.posts;
-  const firstPublish = sortedPosts(posts)[0]?.publish;
+  const visible = PLAN.posts.filter((post) => state.campaigns.has(post.campaign));
+  const shooting = visible.filter((post) => post.shooting).length;
   document.getElementById("stats").innerHTML = `
-    <div class="stat"><b>${posts.length}</b><span>Reels</span></div>
-    <div class="stat"><b>4</b><span>階段</span></div>
-    <div class="stat"><b>${escapeHtml(formatShort(PLAN.courseStart))}</b><span>上課日</span></div>
+    <div class="stat"><b>${visible.length}</b><span>Reels</span></div>
+    <div class="stat"><b>${state.campaigns.size}</b><span>Campaigns</span></div>
+    <div class="stat"><b>${shooting}</b><span>有拍攝日</span></div>
   `;
-  document.getElementById("sync-status").textContent =
-    `${PLAN.source} · 首發 ${formatShort(firstPublish)}`;
+  document.getElementById("sync-status").textContent = PLAN.source;
 }
 
 function renderPostList() {
@@ -197,7 +148,7 @@ function renderPostList() {
       (post) => `
       <li>
         <button type="button" data-id="${post.id}">
-          <time>Reels ${escapeHtml(String(post.number))} · ${escapeHtml(post.stage)}</time>
+          <time>${escapeHtml(postLabel(post))} · ${escapeHtml(post.campaignName)}</time>
           <div class="name">${escapeHtml(post.title)}</div>
           <div class="sub"><strong>發佈</strong> ${escapeHtml(formatShort(post.publish))}</div>
         </button>
@@ -211,7 +162,7 @@ function renderTable() {
   const body = document.getElementById("posts-table-body");
   const posts = filteredPosts();
   if (!posts.length) {
-    body.innerHTML = `<tr><td colspan="6" class="empty">沒有符合篩選的 Reels。</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" class="empty">沒有符合篩選的 Reels。</td></tr>`;
     return;
   }
 
@@ -219,12 +170,13 @@ function renderTable() {
     .map(
       (post) => `
       <tr data-id="${post.id}" class="clickable-row">
-        <td>${escapeHtml(String(post.number))}</td>
+        <td><span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaign)} ${escapeHtml(post.campaignName)}</span></td>
+        <td>R${escapeHtml(String(post.number))}</td>
         <td class="title-cell">${escapeHtml(post.title)}</td>
-        <td>${escapeHtml(post.stage)} · ${escapeHtml(post.stageEn)}</td>
+        <td class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
         <td class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
         <td class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
-        <td class="hook-cell">${escapeHtml(post.hook)}</td>
+        <td>${escapeHtml(post.status)}</td>
       </tr>
     `
     )
@@ -278,13 +230,9 @@ function renderCalendar() {
               .map(
                 (event) => `
               <button class="chip ${event.phase}" data-id="${event.id}" type="button">
-                <span class="mark ${stageClass(event.stageKey)}"></span>
+                <span class="mark ${campaignClass(event.campaign)}"></span>
                 <span>
-                  <span class="label">${
-                    event.isMilestone
-                      ? escapeHtml(event.title)
-                      : `R${escapeHtml(String(event.number))} ${escapeHtml(event.title)}`
-                  }</span>
+                  <span class="label">${escapeHtml(postLabel(event))} ${escapeHtml(event.title)}</span>
                   <span class="meta">${escapeHtml(event.phaseLabel)}</span>
                 </span>
               </button>
@@ -323,12 +271,8 @@ function renderAgenda(events) {
       <li>
         <button type="button" data-id="${event.id}">
           <time>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}</time>
-          <div class="name">${
-            event.isMilestone
-              ? escapeHtml(event.title)
-              : `Reels ${escapeHtml(String(event.number))} · ${escapeHtml(event.title)}`
-          }</div>
-          <div class="sub">${escapeHtml(event.stageName || event.stage)}</div>
+          <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
+          <div class="sub">${escapeHtml(event.campaignName)}</div>
         </button>
       </li>
     `
@@ -346,48 +290,26 @@ function dateRow(label, value) {
   return `<div><span>${escapeHtml(label)}</span><b>${value ? formatLong(value) : "TBC"}</b></div>`;
 }
 
-function openMilestone(id) {
-  const item = (PLAN.milestones || []).find((entry) => entry.id === id);
-  if (!item) return;
-
-  showDrawer(`
-    <p class="kicker">Milestone</p>
-    <h2>${escapeHtml(item.title)}</h2>
-    <div class="pills">
-      <span class="pill">上課日</span>
-    </div>
-    <div class="timeline">
-      ${dateRow("日期", item.date)}
-    </div>
-    <p class="remarks">${escapeHtml(item.note)}</p>
-  `);
-}
-
 function openDrawer(postId) {
-  const milestone = (PLAN.milestones || []).find((item) => item.id === postId);
-  if (milestone) {
-    openMilestone(postId);
-    return;
-  }
-
   const post = PLAN.posts.find((item) => item.id === postId);
   if (!post) return;
 
   showDrawer(`
-    <p class="kicker">Reels ${escapeHtml(String(post.number))} · ${escapeHtml(post.stage)}</p>
+    <p class="kicker">Campaign ${escapeHtml(post.campaign)} · R${escapeHtml(String(post.number))}</p>
     <h2>${escapeHtml(post.title)}</h2>
     <div class="pills">
-      <span class="pill">${escapeHtml(post.stage)}</span>
-      <span class="pill">${escapeHtml(post.stageEn)}</span>
+      <span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaignName)}</span>
+      <span class="pill">${escapeHtml(post.status)}</span>
     </div>
     <div class="timeline">
-      <div><span>階段</span><b>${escapeHtml(post.stageName)}</b></div>
-      <div><span>方向性目標</span><b>${escapeHtml(post.target)}</b></div>
-      <div><span>主要目的</span><b>${escapeHtml(post.purpose)}</b></div>
-      <div><span>Hook</span><b>${escapeHtml(post.hook)}</b></div>
+      ${post.purpose ? `<div><span>目的</span><b>${escapeHtml(post.purpose)}</b></div>` : ""}
+      ${post.hook ? `<div><span>Hook</span><b>${escapeHtml(post.hook)}</b></div>` : ""}
+      ${dateRow("拍攝日", post.shooting)}
       ${dateRow("交片日", post.submission)}
       ${dateRow("發佈日", post.publish)}
     </div>
+    ${post.note ? `<p class="remarks">${escapeHtml(post.note)}</p>` : ""}
+    <p class="remarks"><a href="${escapeHtml(post.url)}" target="_blank" rel="noreferrer">Open in ClickUp</a></p>
   `);
 }
 
@@ -404,13 +326,9 @@ function openDay(dateKey) {
           (event) => `
         <li>
           <button type="button" data-id="${event.id}">
-            <time>${escapeHtml(event.phaseLabel)}</time>
-            <div class="name">${
-              event.isMilestone
-                ? escapeHtml(event.title)
-                : `Reels ${escapeHtml(String(event.number))} · ${escapeHtml(event.title)}`
-            }</div>
-            <div class="sub">${escapeHtml(event.stageName || event.stage)}</div>
+            <time>${escapeHtml(event.phaseLabel)} · Campaign ${escapeHtml(event.campaign)}</time>
+            <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
+            <div class="sub">${escapeHtml(event.campaignName)}</div>
           </button>
         </li>
       `
@@ -452,7 +370,7 @@ function bind() {
     });
   });
 
-  document.querySelectorAll(".date-toggle").forEach((button) => {
+  document.querySelectorAll("[data-phase]").forEach((button) => {
     button.addEventListener("click", () => {
       const phase = button.dataset.phase;
       if (state.phases.has(phase)) {
@@ -467,9 +385,19 @@ function bind() {
     });
   });
 
-  document.getElementById("filter-stage").addEventListener("change", (event) => {
-    state.stage = event.target.value;
-    renderAll();
+  document.querySelectorAll("[data-campaign]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const campaign = button.dataset.campaign;
+      if (state.campaigns.has(campaign)) {
+        if (state.campaigns.size === 1) return;
+        state.campaigns.delete(campaign);
+        button.classList.remove("active");
+      } else {
+        state.campaigns.add(campaign);
+        button.classList.add("active");
+      }
+      renderAll();
+    });
   });
 
   document.addEventListener("click", (event) => {

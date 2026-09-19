@@ -3,24 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NSCA Reels Calendar · SSF</title>
+    <title>Campaign 01 + 02 · Content Calendar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=nsca5" />
+    <link rel="stylesheet" href="styles.css?v=c0102" />
   </head>
   <body>
     <div class="app">
       <header class="masthead">
         <div class="brand">
-          <p class="kicker">SSF · NSCA Campaign 2026</p>
-          <h1>Reels Calendar</h1>
+          <p class="kicker">ClickUp · SSF Content Calendar</p>
+          <h1>Campaign 01 + 02</h1>
           <p class="lede">
-            10 條 Reels，分 4 個階段。日曆同時顯示交片日同發佈日，方便對進度同對外檔期。
-            <span class="muted" id="sync-status">Source: NSCA Project Reels Plan 階段 1–4</span>
+            同一個日曆睇 What's SSF（R5 起）同 NSCA Promotion 的拍攝日、交片日、發佈日。
+            <span class="muted" id="sync-status">Source: ClickUp public tasks</span>
           </p>
         </div>
         <div class="stats" id="stats"></div>
@@ -50,39 +50,40 @@
 
       <section class="filters-bar">
         <div class="filter-group">
+          <span class="filter-label">Campaign</span>
+          <div class="date-toggles" role="group" aria-label="Campaign filters">
+            <button type="button" class="date-toggle active" data-campaign="01" id="toggle-c01">
+              <i class="swatch ssf"></i>01 What's SSF
+            </button>
+            <button type="button" class="date-toggle active" data-campaign="02" id="toggle-c02">
+              <i class="swatch nsca"></i>02 NSCA
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-group">
           <span class="filter-label">顯示日期</span>
           <div class="date-toggles" role="group" aria-label="Date type filters">
+            <button type="button" class="date-toggle active" data-phase="shooting" id="toggle-shooting">
+              <i class="dot shooting"></i>拍攝日
+            </button>
             <button type="button" class="date-toggle active" data-phase="submission" id="toggle-submission">
               <i class="dot submission"></i>交片日
             </button>
             <button type="button" class="date-toggle active" data-phase="publish" id="toggle-publish">
               <i class="dot publish"></i>發佈日
             </button>
-            <button type="button" class="date-toggle active" data-phase="class" id="toggle-class">
-              <i class="dot class"></i>上課日
-            </button>
           </div>
-        </div>
-
-        <div class="filters">
-          <label class="filter">
-            <span>階段</span>
-            <select id="filter-stage">
-              <option value="all">全部階段</option>
-            </select>
-          </label>
         </div>
       </section>
 
       <div class="legend">
+        <span class="legend-item"><i class="dot shooting"></i>拍攝日 Shooting</span>
         <span class="legend-item"><i class="dot submission"></i>交片日 Submission</span>
         <span class="legend-item"><i class="dot publish"></i>發佈日 Publish</span>
-        <span class="legend-item"><i class="dot class"></i>上課日 6 Nov</span>
-        <span class="legend-item"><i class="swatch awareness"></i>階段 1 Awareness</span>
-        <span class="legend-item"><i class="swatch authority"></i>階段 2 Authority</span>
-        <span class="legend-item"><i class="swatch urgency"></i>階段 3 Urgency</span>
-        <span class="legend-item"><i class="swatch proof"></i>階段 4 Proof</span>
-        <span class="legend-note">10 月 15 日：Reels 5 發佈 + Reels 6 交片</span>
+        <span class="legend-item"><i class="swatch ssf"></i>Campaign 01 What's SSF</span>
+        <span class="legend-item"><i class="swatch nsca"></i>Campaign 02 NSCA</span>
+        <span class="legend-note">01 只顯示 R5–R10；R9 發佈日 TBC</span>
       </div>
 
       <main class="layout" id="calendar-layout">
@@ -93,7 +94,7 @@
 
         <aside class="rail">
           <section class="panel">
-            <h3>發佈順序</h3>
+            <h3>Reels</h3>
             <ol class="agenda post-list" id="post-list"></ol>
           </section>
           <section class="panel">
@@ -105,17 +106,18 @@
 
       <section class="table-wrap" id="table-layout" hidden>
         <div class="panel table-panel">
-          <h3>10 條 Reels 排程</h3>
+          <h3>兩個 Campaign 的 Reels 排程</h3>
           <div class="table-scroll">
             <table class="posts-table">
               <thead>
                 <tr>
+                  <th>Campaign</th>
                   <th>Reels</th>
                   <th>Title</th>
-                  <th>階段</th>
+                  <th>拍攝日</th>
                   <th>交片日</th>
                   <th>發佈日</th>
-                  <th>Hook</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody id="posts-table-body"></tbody>
@@ -131,7 +133,7 @@
       <div id="drawer-body"></div>
     </aside>
 
-    <script src="data.js?v=nsca5"></script>
-    <script src="app.js?v=nsca5"></script>
+    <script src="data.js?v=c0102"></script>
+    <script src="app.js?v=c0102"></script>
   </body>
 </html>

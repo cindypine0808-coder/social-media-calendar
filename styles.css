@@ -194,6 +194,10 @@ h1 {
   background: #2a241e;
 }
 
+.date-toggle[data-phase="shooting"].active {
+  border-color: var(--shooting);
+}
+
 .date-toggle[data-phase="submission"].active {
   border-color: var(--submission);
 }
@@ -202,8 +206,12 @@ h1 {
   border-color: var(--publish);
 }
 
-.date-toggle[data-phase="class"].active {
-  border-color: var(--class);
+.date-toggle[data-campaign="01"].active {
+  border-color: var(--awareness);
+}
+
+.date-toggle[data-campaign="02"].active {
+  border-color: var(--authority);
 }
 
 .legend-note {
@@ -250,6 +258,10 @@ h1 {
 .posts-table .title-cell {
   font-weight: 500;
   min-width: 180px;
+}
+
+.posts-table .date-shooting {
+  color: var(--shooting);
 }
 
 .posts-table .date-submission {
@@ -392,6 +404,10 @@ select {
   border-radius: 50%;
 }
 
+.dot.shooting {
+  background: var(--shooting);
+}
+
 .dot.submission {
   background: var(--submission);
 }
@@ -402,6 +418,16 @@ select {
 
 .dot.class {
   background: var(--class);
+}
+
+.swatch.ssf,
+.mark.ssf {
+  background: var(--awareness);
+}
+
+.swatch.nsca,
+.mark.nsca {
+  background: var(--authority);
 }
 
 .swatch.awareness,
@@ -524,6 +550,10 @@ select {
 
 .chip .mark {
   width: 6px;
+}
+
+.chip.shooting {
+  border-left-color: var(--shooting);
 }
 
 .chip.submission {
@@ -657,6 +687,16 @@ select {
   padding: 4px 8px;
   border: 1px solid var(--line);
   font-size: 12px;
+}
+
+.pill.ssf {
+  color: var(--awareness);
+  border-color: #3d4d5c;
+}
+
+.pill.nsca {
+  color: var(--authority);
+  border-color: #4a3d5c;
 }
 
 .pill.high {
