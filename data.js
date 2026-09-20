@@ -86,10 +86,10 @@ const PLAN = {
       status: "to do",
       purpose: "",
       hook: "",
-      shooting: "2026-09-21",
+      shooting: "2026-09-25",
       submission: "2026-10-02",
       publish: "",
-      note: "Description 空白。拍攝日來自 Remarks：shooting on 21/9；交片日來自 Due date。",
+      note: "Description 空白。拍攝日來自 Remarks：shooting on 25/9；交片日來自 Due date。",
       url: "https://sharing.clickup.com/25623340/t/h/z94x8e3amg/KELEM2HV2WFDWMA",
     },
     {
