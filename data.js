@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Campaign 01 + 02",
   "subtitle": "What's SSF + NSCA Promotion",
-  "source": "ClickUp auto-sync · 2026/09/23 16:49",
+  "source": "ClickUp auto-sync · 2026/09/23 17:09",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -46,7 +46,7 @@ const PLAN = {
       "hook": "我係 Charlotte，係現役港隊欖球運動員",
       "shooting": "",
       "submission": "2026-10-04",
-      "publish": "2026-10-07",
+      "publish": "2026-10-12",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amc/KELEM2HV2WFDWMA"
     },
@@ -61,7 +61,7 @@ const PLAN = {
       "hook": "Hello 我地係麥生麥太，上年開始跟Jason上PT，係女女介紹我地黎",
       "shooting": "2026-09-25",
       "submission": "2026-10-05",
-      "publish": "2026-10-07",
+      "publish": "2026-10-13",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amd/KELEM2HV2WFDWMA"
     },
