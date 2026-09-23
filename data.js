@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Campaign 01 + 02",
   "subtitle": "What's SSF + NSCA Promotion",
-  "source": "ClickUp auto-sync · 2026/09/23 17:09",
+  "source": "ClickUp auto-sync · 2026/09/23 17:16",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
