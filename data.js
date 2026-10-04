@@ -136,7 +136,7 @@ const PLAN = {
       "hook": "2026年最後一期 + 把握早鳥優惠！",
       "shooting": "",
       "submission": "2026-09-28",
-      "publish": "2026-10-04",
+      "publish": "2026-10-05",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mu/EY1ML8HT56DRLRM"
     },
