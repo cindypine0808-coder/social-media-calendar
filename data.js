@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Campaign 01 + 02",
   "subtitle": "What's SSF + NSCA Promotion",
-  "source": "ClickUp auto-sync · 2026/09/25 15:25",
+  "source": "ClickUp auto-sync · 2026/10/04 11:39",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -45,7 +45,7 @@ const PLAN = {
       "purpose": "介紹 SSF 唔同類型嘅學生，例如運動員",
       "hook": "我係 Charlotte，係現役港隊欖球運動員",
       "shooting": "",
-      "submission": "2026-10-04",
+      "submission": "2026-10-07",
       "publish": "2026-10-12",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amc/KELEM2HV2WFDWMA"
@@ -60,7 +60,7 @@ const PLAN = {
       "purpose": "介紹 SSF 唔同類型嘅學生，例如銀髮族學員",
       "hook": "Hello 我地係麥生麥太，上年開始跟Jason上PT，係女女介紹我地黎",
       "shooting": "2026-09-25",
-      "submission": "2026-10-05",
+      "submission": "2026-10-07",
       "publish": "2026-10-13",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amd/KELEM2HV2WFDWMA"
@@ -75,8 +75,8 @@ const PLAN = {
       "purpose": "突出翻新前/後設施對比",
       "hook": "30秒帶你睇翻新後Studio轉變",
       "shooting": "2026-09-21",
-      "submission": "2026-09-30",
-      "publish": "2026-10-07",
+      "submission": "2026-10-05",
+      "publish": "2026-10-08",
       "note": "拍攝日來自 Remarks：shooting on 21/9",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3ame/KELEM2HV2WFDWMA"
     },
@@ -116,7 +116,7 @@ const PLAN = {
       "campaignName": "NSCA Promotion",
       "number": 1,
       "title": "NSCA MOOD VIBE VID",
-      "status": "to do",
+      "status": "complete",
       "purpose": "NSCA課程Vibe（帶出理論&實踐的重要性）+ 資深 Coach + 重要數字 (Subtitles)",
       "hook": "",
       "shooting": "",
@@ -136,7 +136,7 @@ const PLAN = {
       "hook": "2026年最後一期 + 把握早鳥優惠！",
       "shooting": "",
       "submission": "2026-09-28",
-      "publish": "2026-09-30",
+      "publish": "2026-10-04",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mu/EY1ML8HT56DRLRM"
     },
