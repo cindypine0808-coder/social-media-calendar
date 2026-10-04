@@ -283,7 +283,7 @@ function renderAgenda(events) {
       (event) => `
       <li>
         <button type="button" data-id="${event.id}">
-          <time>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}</time>
+          <time><i class="dot ${event.phase}"></i>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}</time>
           <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
           <div class="sub">${escapeHtml(event.campaignName)}</div>
         </button>
@@ -339,7 +339,7 @@ function openDay(dateKey) {
           (event) => `
         <li>
           <button type="button" data-id="${event.id}">
-            <time>${escapeHtml(event.phaseLabel)} · Campaign ${escapeHtml(event.campaign)}</time>
+            <time><i class="dot ${event.phase}"></i>${escapeHtml(event.phaseLabel)} · Campaign ${escapeHtml(event.campaign)}</time>
             <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
             <div class="sub">${escapeHtml(event.campaignName)}</div>
           </button>

@@ -630,10 +630,16 @@ select {
 }
 
 .agenda time {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
   color: var(--muted);
+}
+
+.agenda time .dot {
+  flex: 0 0 10px;
 }
 
 .agenda .name {
