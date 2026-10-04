@@ -101,6 +101,10 @@ function eventsForPosts(posts) {
     );
 }
 
+function eventsForDate(dateKey) {
+  return eventsForPosts(filteredPosts()).filter((event) => event.date === dateKey);
+}
+
 function updateViewVisibility() {
   const calendarLayout = document.getElementById("calendar-layout");
   const tableLayout = document.getElementById("table-layout");
@@ -323,7 +327,7 @@ function openDrawer(postId) {
 }
 
 function openDay(dateKey) {
-  const events = eventsForPosts(filteredPosts()).filter((event) => event.date === dateKey);
+  const events = eventsForDate(dateKey);
   if (!events.length) return;
 
   showDrawer(`
@@ -417,6 +421,14 @@ function bind() {
     if (target.id === "drawer-close" || target.id === "backdrop") {
       closeDrawer();
       return;
+    }
+    const day = target.closest(".day[data-date]");
+    if (day && !target.closest("#drawer")) {
+      const dateEvents = eventsForDate(day.dataset.date);
+      if (dateEvents.length > 1) {
+        openDay(day.dataset.date);
+        return;
+      }
     }
     if (target.dataset.id) {
       openDrawer(target.dataset.id);
