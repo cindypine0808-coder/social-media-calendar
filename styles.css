@@ -755,6 +755,11 @@ select {
   line-height: 1.5;
 }
 
+.label-short,
+.filter-short {
+  display: none;
+}
+
 @media (max-width: 1100px) {
   .masthead,
   .layout {
@@ -771,28 +776,269 @@ select {
 }
 
 @media (max-width: 720px) {
+  html,
+  body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
   .app {
-    padding: 20px 12px 48px;
+    padding: 16px 12px calc(36px + env(safe-area-inset-bottom));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .masthead {
+    gap: 16px;
+    padding-bottom: 18px;
+  }
+
+  h1 {
+    font-size: 32px;
+    line-height: 1.05;
+  }
+
+  .lede {
+    max-width: none;
+    font-size: 14px;
   }
 
   .stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
-  .day {
-    min-height: 96px;
-    padding: 6px 4px;
+  .stat {
+    padding: 10px 8px;
   }
 
-  .chip {
+  .stat b {
+    font-size: 20px;
+  }
+
+  .toolbar,
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .month-nav {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .month-nav h2 {
+    min-width: 0;
+    flex: 1;
+    font-size: 20px;
+  }
+
+  .nav-btn,
+  .today-btn,
+  .view-btn,
+  .date-toggle {
+    min-height: 44px;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .view-btn {
+    flex: 1;
+  }
+
+  .date-toggles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-group:last-child .date-toggles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .date-toggle {
+    justify-content: center;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .legend {
+    gap: 10px 12px;
+    font-size: 12px;
+  }
+
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .rail {
+    order: 2;
+  }
+
+  .calendar-wrap {
+    order: 1;
+    overflow: hidden;
+  }
+
+  .weekday-row span {
+    padding: 8px 2px;
+    text-align: center;
     font-size: 10px;
   }
 
-  .chip .label,
+  .day {
+    min-height: 74px;
+    padding: 5px 3px;
+  }
+
+  .day.has-events {
+    cursor: pointer;
+  }
+
+  .date-num {
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .today-tag {
+    display: none;
+  }
+
+  .day-count {
+    margin-left: auto;
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: 99px;
+    background: #322a22;
+    color: var(--ink);
+    font-size: 9px;
+    text-align: center;
+  }
+
+  .chip {
+    grid-template-columns: 4px 1fr;
+    gap: 3px;
+    padding: 2px 3px;
+    font-size: 9px;
+    border-left-width: 2px;
+  }
+
+  .chip .mark {
+    width: 4px;
+  }
+
+  .label-full,
   .chip .meta {
+    display: none;
+  }
+
+  .label-short {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .more {
+    font-size: 10px;
+  }
+
+  .panel {
+    padding: 14px 12px 6px;
+  }
+
+  .post-list {
+    max-height: none;
+  }
+
+  .posts-table {
+    min-width: 0;
+  }
+
+  .posts-table thead {
+    display: none;
+  }
+
+  .posts-table,
+  .posts-table tbody,
+  .posts-table tr,
+  .posts-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .posts-table tr {
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .posts-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 0;
+  }
+
+  .posts-table td::before {
+    content: attr(data-label);
+    flex: 0 0 72px;
+    color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .posts-table .title-cell {
+    min-width: 0;
+    font-weight: 600;
+  }
+
+  .drawer {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    max-height: min(88vh, 760px);
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+  }
+
+  .drawer-close {
+    min-height: 44px;
+  }
+
+  .table-scroll {
+    overflow: visible;
+  }
+
+  .filter-long {
+    display: none;
+  }
+
+  .filter-short {
+    display: inline;
+  }
+
+  .drawer h2 {
+    font-size: 24px;
+  }
+
+  .timeline div {
+    grid-template-columns: 88px 1fr;
+    gap: 8px;
   }
 }

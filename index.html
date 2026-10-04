@@ -2,7 +2,9 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#14110e" />
+    <meta name="color-scheme" content="dark" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <title>Campaign 01 + 02 · Content Calendar</title>
@@ -12,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=c0102-6" />
+    <link rel="stylesheet" href="styles.css?v=c0102-7" />
   </head>
   <body>
     <div class="app">
@@ -56,10 +58,10 @@
           <span class="filter-label">Campaign</span>
           <div class="date-toggles" role="group" aria-label="Campaign filters">
             <button type="button" class="date-toggle active" data-campaign="01" id="toggle-c01">
-              <i class="swatch ssf"></i>01 What's SSF
+              <i class="swatch ssf"></i><span class="filter-long">01 What's SSF</span><span class="filter-short">01 SSF</span>
             </button>
             <button type="button" class="date-toggle active" data-campaign="02" id="toggle-c02">
-              <i class="swatch nsca"></i>02 NSCA
+              <i class="swatch nsca"></i><span class="filter-long">02 NSCA</span><span class="filter-short">02 NSCA</span>
             </button>
           </div>
         </div>
@@ -136,7 +138,7 @@
       <div id="drawer-body"></div>
     </aside>
 
-    <script src="data.js?v=c0102-6"></script>
-    <script src="app.js?v=c0102-6"></script>
+    <script src="data.js?v=c0102-7"></script>
+    <script src="app.js?v=c0102-7"></script>
   </body>
 </html>

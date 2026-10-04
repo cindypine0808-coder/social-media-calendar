@@ -158,6 +158,10 @@ function renderPostList() {
     .join("");
 }
 
+function isCompact() {
+  return window.matchMedia("(max-width: 720px)").matches;
+}
+
 function renderTable() {
   const body = document.getElementById("posts-table-body");
   const posts = filteredPosts();
@@ -170,13 +174,13 @@ function renderTable() {
     .map(
       (post) => `
       <tr data-id="${post.id}" class="clickable-row">
-        <td><span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaign)} ${escapeHtml(post.campaignName)}</span></td>
-        <td>R${escapeHtml(String(post.number))}</td>
-        <td class="title-cell">${escapeHtml(post.title)}</td>
-        <td class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
-        <td class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
-        <td class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
-        <td>${escapeHtml(post.status)}</td>
+        <td data-label="Campaign"><span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaign)} ${escapeHtml(post.campaignName)}</span></td>
+        <td data-label="Reels">R${escapeHtml(String(post.number))}</td>
+        <td data-label="Title" class="title-cell">${escapeHtml(post.title)}</td>
+        <td data-label="拍攝日" class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
+        <td data-label="交片日" class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
+        <td data-label="發佈日" class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
+        <td data-label="Status">${escapeHtml(post.status)}</td>
       </tr>
     `
     )
@@ -217,13 +221,15 @@ function renderCalendar() {
       const outside = date.getMonth() !== state.month;
       const isToday = key === iso(TODAY);
       const dayEvents = byDate[key] || [];
-      const visible = dayEvents.slice(0, 3);
+      const compact = isCompact();
+      const visible = dayEvents.slice(0, compact ? 2 : 3);
       const overflow = dayEvents.length - visible.length;
       return `
-        <article class="day${outside ? " outside" : ""}${isToday ? " today" : ""}">
+        <article class="day${outside ? " outside" : ""}${isToday ? " today" : ""}${dayEvents.length ? " has-events" : ""}" data-date="${key}">
           <div class="date-num">
             <span>${date.getDate()}</span>
-            ${isToday ? "<span>Today</span>" : ""}
+            ${isToday ? "<span class=\"today-tag\">Today</span>" : ""}
+            ${compact && dayEvents.length ? `<span class="day-count">${dayEvents.length}</span>` : ""}
           </div>
           <div class="events">
             ${visible
@@ -232,7 +238,10 @@ function renderCalendar() {
               <button class="chip ${event.phase}" data-id="${event.id}" type="button">
                 <span class="mark ${campaignClass(event.campaign)}"></span>
                 <span>
-                  <span class="label">${escapeHtml(postLabel(event))} ${escapeHtml(event.title)}</span>
+                  <span class="label">
+                    <span class="label-short">${escapeHtml(postLabel(event))}</span>
+                    <span class="label-full">${escapeHtml(postLabel(event))} ${escapeHtml(event.title)}</span>
+                  </span>
                   <span class="meta">${escapeHtml(event.phaseLabel)}</span>
                 </span>
               </button>
@@ -420,6 +429,14 @@ function bind() {
     if (target.dataset.date) {
       openDay(target.dataset.date);
     }
+  });
+
+  let compact = isCompact();
+  window.addEventListener("resize", () => {
+    const next = isCompact();
+    if (next === compact) return;
+    compact = next;
+    renderAll();
   });
 }
 
