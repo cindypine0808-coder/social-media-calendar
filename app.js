@@ -12,7 +12,7 @@ const state = {
   month: TODAY.getMonth(),
   view: "calendar",
   phases: new Set(["shooting", "submission", "publish"]),
-  campaigns: new Set(["01", "02"]),
+  campaigns: new Set(["01", "02", "03"]),
 };
 
 function parseDate(iso) {
@@ -53,7 +53,9 @@ function escapeHtml(value) {
 }
 
 function campaignClass(campaign) {
-  return campaign === "02" ? "nsca" : "ssf";
+  if (campaign === "02") return "nsca";
+  if (campaign === "03") return "jason";
+  return "ssf";
 }
 
 function postLabel(post) {

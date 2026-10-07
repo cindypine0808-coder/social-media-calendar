@@ -7,23 +7,23 @@
     <meta name="color-scheme" content="dark" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
-    <title>Campaign 01 + 02 · Content Calendar</title>
+    <title>Campaign 01 + 02 + 03 · Content Calendar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=c0102-10" />
+    <link rel="stylesheet" href="styles.css?v=c0102-11" />
   </head>
   <body>
     <div class="app">
       <header class="masthead">
         <div class="brand">
           <p class="kicker">ClickUp · SSF Content Calendar</p>
-          <h1>Campaign 01 + 02</h1>
+          <h1>Campaign 01 + 02 + 03</h1>
           <p class="lede">
-            同一個日曆睇 What's SSF（R5 起）同 NSCA Promotion 的拍攝日、交片日、發佈日。
+            同一個日曆睇 What's SSF（R5 起）、NSCA Promotion 同 Jason IP 的拍攝日、交片日、發佈日。
             之後只需改 ClickUp，日曆約每 15 分鐘自動跟上。
             <span class="muted" id="sync-status">Source: ClickUp public tasks</span>
           </p>
@@ -63,6 +63,9 @@
             <button type="button" class="date-toggle active" data-campaign="02" id="toggle-c02">
               <i class="swatch nsca"></i><span class="filter-long">02 NSCA</span><span class="filter-short">02 NSCA</span>
             </button>
+            <button type="button" class="date-toggle active" data-campaign="03" id="toggle-c03">
+              <i class="swatch jason"></i><span class="filter-long">03 Jason IP</span><span class="filter-short">03 IP</span>
+            </button>
           </div>
         </div>
 
@@ -88,7 +91,8 @@
         <span class="legend-item"><i class="dot publish"></i>發佈日 Publish</span>
         <span class="legend-item"><i class="swatch ssf"></i>Campaign 01 What's SSF</span>
         <span class="legend-item"><i class="swatch nsca"></i>Campaign 02 NSCA</span>
-        <span class="legend-note">01 只顯示 R5–R10。日期以 ClickUp 為主檔，約每 15 分鐘自動同步。</span>
+        <span class="legend-item"><i class="swatch jason"></i>Campaign 03 Jason IP</span>
+        <span class="legend-note">01 只顯示 R5–R10。03 顯示 R1–R10。日期以 ClickUp 為主檔，約每 15 分鐘自動同步。</span>
       </div>
 
       <main class="layout" id="calendar-layout">
@@ -111,7 +115,7 @@
 
       <section class="table-wrap" id="table-layout" hidden>
         <div class="panel table-panel">
-          <h3>兩個 Campaign 的 Reels 排程</h3>
+          <h3>三個 Campaign 的 Reels 排程</h3>
           <div class="table-scroll">
             <table class="posts-table">
               <thead>
@@ -138,7 +142,7 @@
       <div id="drawer-body"></div>
     </aside>
 
-    <script src="data.js?v=c0102-10"></script>
-    <script src="app.js?v=c0102-10"></script>
+    <script src="data.js?v=c0102-11"></script>
+    <script src="app.js?v=c0102-11"></script>
   </body>
 </html>

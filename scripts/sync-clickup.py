@@ -29,6 +29,14 @@ SOURCES = [
         "token": "EY1ML8HT56DRLRM",
         "minReel": 1,
     },
+    {
+        "id": "03",
+        "name": "Jason IP",
+        "fullName": "03 - Jason's IP Social Media Campaign",
+        "taskId": "z94x8e36nw",
+        "token": "P7Z472HHVVY56R8",
+        "minReel": 1,
+    },
 ]
 
 
@@ -53,10 +61,18 @@ def due_to_iso(ms):
 
 
 def parse_reel(name):
-    match = re.match(r"^R(\d+)\s*[:：]\s*(.+)$", str(name or ""), re.I)
+    text = str(name or "").strip()
+    if re.search(r"photo\s+shooting|^R[\d,\s]+shooting\b", text, re.I):
+        return None
+    match = re.match(r"^R(\d+)\s*[:：]\s*(.+)$", text, re.I) or re.match(
+        r"^R(\d+)\s+(.+)$", text, re.I
+    )
     if not match:
         return None
-    return {"number": int(match.group(1)), "rawTitle": match.group(2).strip()}
+    title = match.group(2).strip()
+    if re.search(r"^shooting\b|photo\s+shooting", title, re.I):
+        return None
+    return {"number": int(match.group(1)), "rawTitle": title}
 
 
 def display_title(raw):
@@ -182,12 +198,12 @@ def fetch_plan():
     )
     now = datetime.now(HKT).strftime("%Y/%m/%d %H:%M")
     return {
-        "title": "Campaign 01 + 02",
-        "subtitle": "What's SSF + NSCA Promotion",
+        "title": "Campaign 01 + 02 + 03",
+        "subtitle": "What's SSF + NSCA Promotion + Jason IP",
         "source": f"ClickUp auto-sync · {now}",
         "timezone": "Asia/Hong_Kong",
         "dateRange": f"{dates[0]} – {dates[-1]}" if dates else "",
-        "note": "Campaign 01 只顯示 R5 起。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
+        "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
         "campaigns": [
             {
                 "id": source["id"],

@@ -214,6 +214,10 @@ h1 {
   border-color: var(--authority);
 }
 
+.date-toggle[data-campaign="03"].active {
+  border-color: var(--ip);
+}
+
 .legend-note {
   color: #6f675c;
   font-size: 12px;
@@ -428,6 +432,11 @@ select {
 .swatch.nsca,
 .mark.nsca {
   background: var(--authority);
+}
+
+.swatch.jason,
+.mark.jason {
+  background: var(--ip);
 }
 
 .swatch.awareness,
@@ -705,6 +714,11 @@ select {
   border-color: #4a3d5c;
 }
 
+.pill.jason {
+  color: var(--ip);
+  border-color: #5c4a36;
+}
+
 .pill.high {
   color: var(--high);
 }
@@ -858,7 +872,7 @@ select {
 
   .date-toggles {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .filter-group:last-child .date-toggles {
