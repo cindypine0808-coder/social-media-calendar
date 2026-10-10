@@ -62,7 +62,7 @@ def due_to_iso(ms):
 
 def parse_reel(name):
     text = str(name or "").strip()
-    if re.search(r"photo\s+shooting|^R[\d,\s]+shooting\b", text, re.I):
+    if re.search(r"photo\s+shooting|^R[\d,\s]+shooting\b|script\s+share", text, re.I):
         return None
     match = re.match(r"^R(\d+)\s*[:：]\s*(.+)$", text, re.I) or re.match(
         r"^R(\d+)\s+(.+)$", text, re.I
@@ -70,7 +70,7 @@ def parse_reel(name):
     if not match:
         return None
     title = match.group(2).strip()
-    if re.search(r"^shooting\b|photo\s+shooting", title, re.I):
+    if re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
         return None
     return {"number": int(match.group(1)), "rawTitle": title}
 
