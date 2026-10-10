@@ -95,11 +95,17 @@ def parse_labeled_date(text, label):
 
 
 def parse_remarks_shooting(remarks):
+    text = remarks or ""
     match = re.search(
         r"shooting\s+on\s+(\d{1,2})\s*/\s*(\d{1,2})(?:\s*/\s*(\d{2,4}))?",
-        remarks or "",
+        text,
         re.I,
     )
+    if not match and re.search(r"影|拍|shoot", text, re.I):
+        match = re.search(
+            r"(\d{1,2})\s*/\s*(\d{1,2})(?:\s*/\s*(\d{2,4}))?",
+            text,
+        )
     if not match:
         return ""
     day, month, year = match.group(1), match.group(2), match.group(3)

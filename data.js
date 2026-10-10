@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Campaign 01 + 02 + 03",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/10/10 11:48",
+  "source": "ClickUp auto-sync · 2026/10/10 12:11",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -80,10 +80,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "突出翻新前/後設施對比",
       "hook": "30秒帶你睇翻新後Studio轉變",
-      "shooting": "2026-09-21",
-      "submission": "2026-10-05",
-      "publish": "2026-10-08",
-      "note": "拍攝日來自 Remarks：shooting on 21/9",
+      "shooting": "2026-10-21",
+      "submission": "2026-10-28",
+      "publish": "2026-11-03",
+      "note": "拍攝日來自 Remarks：21/10 拆棚後再影",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3ame/KELEM2HV2WFDWMA"
     },
     {
