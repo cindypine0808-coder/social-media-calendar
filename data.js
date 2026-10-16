@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Campaign 01 + 02 + 03",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/10/15 18:37",
+  "source": "ClickUp auto-sync · 2026/10/16 10:58",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -216,7 +216,7 @@ const PLAN = {
       "purpose": "讓潛在報名人士認識Tina",
       "hook": "今次CPT課程我地邀請到台灣嘅Tina老師......",
       "shooting": "",
-      "submission": "2026-10-22",
+      "submission": "2026-10-21",
       "publish": "2026-10-26",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mk/EY1ML8HT56DRLRM"
@@ -232,7 +232,7 @@ const PLAN = {
       "hook": "我覺得呢個course最影響到我嘅係......",
       "shooting": "2026-10-10",
       "submission": "2026-10-16",
-      "publish": "2026-10-20",
+      "publish": "2026-10-23",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mw/EY1ML8HT56DRLRM"
     },
@@ -245,9 +245,9 @@ const PLAN = {
       "status": "to do",
       "purpose": "一條片解答NSCA課程常見問題",
       "hook": "第一次考NSCA教練證照，可唔可以跳過CPT",
-      "shooting": "2026-10-15",
-      "submission": "2026-10-24",
-      "publish": "2026-10-27",
+      "shooting": "2026-10-22",
+      "submission": "2026-10-26",
+      "publish": "2026-10-30",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mx/EY1ML8HT56DRLRM"
     },
