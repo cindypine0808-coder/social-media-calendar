@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/10/21 16:13",
+  "source": "ClickUp auto-sync · 2026/10/21 16:24",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-03",
   "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -52,7 +52,7 @@ const PLAN = {
       "hook": "我係 Charlotte，係現役港隊欖球運動員",
       "shooting": "",
       "submission": "2026-10-10",
-      "publish": "2026-10-22",
+      "publish": "2026-11-05",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amc/KELEM2HV2WFDWMA"
     },
@@ -67,7 +67,7 @@ const PLAN = {
       "hook": "Hello 我地係麥生麥太，上年開始跟Jason上PT，係女女介紹我地黎",
       "shooting": "2026-09-25",
       "submission": "2026-10-12",
-      "publish": "2026-10-26",
+      "publish": "2026-11-09",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amd/KELEM2HV2WFDWMA"
     },
@@ -82,7 +82,7 @@ const PLAN = {
       "hook": "30秒帶你睇翻新後Studio轉變",
       "shooting": "2026-10-22",
       "submission": "2026-10-29",
-      "publish": "2026-11-05",
+      "publish": "2026-11-10",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3ame/KELEM2HV2WFDWMA"
     },
@@ -97,7 +97,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-10-22",
       "submission": "2026-10-23",
-      "publish": "2026-11-09",
+      "publish": "2026-11-12",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amg/KELEM2HV2WFDWMA"
     },
@@ -112,7 +112,7 @@ const PLAN = {
       "hook": "《失戀療傷日誌》",
       "shooting": "2026-09-21",
       "submission": "2026-10-30",
-      "publish": "2026-11-12",
+      "publish": "2026-11-16",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amh/KELEM2HV2WFDWMA"
     },
