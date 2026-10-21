@@ -204,7 +204,7 @@ def fetch_plan():
     )
     now = datetime.now(HKT).strftime("%Y/%m/%d %H:%M")
     return {
-        "title": "Campaign 01 + 02 + 03",
+        "title": "Marketing Campaign",
         "subtitle": "What's SSF + NSCA Promotion + Jason IP",
         "source": f"ClickUp auto-sync · {now}",
         "timezone": "Asia/Hong_Kong",

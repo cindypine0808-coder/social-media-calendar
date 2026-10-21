@@ -77,10 +77,29 @@ h1 {
 }
 
 .lede {
-  max-width: 420px;
+  max-width: 620px;
   margin: 14px 0 0;
   color: #d8cfc3;
   line-height: 1.5;
+}
+
+.campaign-summary {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.campaign-summary li {
+  position: relative;
+  padding-left: 1em;
+  margin: 0 0 6px;
+}
+
+.campaign-summary li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
 }
 
 .muted {
