@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/10/22 10:33",
+  "source": "ClickUp auto-sync · 2026/10/26 15:44",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2026-12-10",
   "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
@@ -245,7 +245,7 @@ const PLAN = {
       "status": "to do",
       "purpose": "一條片解答NSCA課程常見問題",
       "hook": "第一次考NSCA教練證照，可唔可以跳過CPT",
-      "shooting": "2026-10-26",
+      "shooting": "2026-10-28",
       "submission": "2026-10-30",
       "publish": "2026-11-03",
       "note": "",
@@ -307,7 +307,7 @@ const PLAN = {
       "hook": "有無覺得自己通常頸部以下嘅位置，都會",
       "shooting": "2026-11-05",
       "submission": "2026-11-12",
-      "publish": "2026-11-17",
+      "publish": "2026-11-18",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76hv/P7Z472HHVVY56R8"
     },
@@ -352,7 +352,7 @@ const PLAN = {
       "hook": "點解10個長者入面，就會有6個以上患有",
       "shooting": "2026-11-12",
       "submission": "2026-11-24",
-      "publish": "2026-11-27",
+      "publish": "2026-11-26",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76mv/P7Z472HHVVY56R8"
     },
@@ -367,7 +367,7 @@ const PLAN = {
       "hook": "今日用1分鐘教大家做一個簡單，",
       "shooting": "2026-11-12",
       "submission": "2026-11-28",
-      "publish": "2026-12-02",
+      "publish": "2026-12-01",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76n1/P7Z472HHVVY56R8"
     },
