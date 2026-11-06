@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 import re
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -84,6 +84,20 @@ def parse_reel(name):
                 episode = int(trailing.group(1))
         return {
             "number": int(colon.group(1)),
+            "episode": episode,
+            "rawTitle": title,
+        }
+    lettered = re.search(r"R(\d+)([a-z])\s+(.+)$", text, re.I)
+    if lettered:
+        title = lettered.group(3).strip()
+        if not title or re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
+            return None
+        episode = ord(lettered.group(2).lower()) - ord("a") + 1
+        trailing = re.search(r"\bEP\s*(\d+)\s*$", title, re.I)
+        if trailing:
+            episode = int(trailing.group(1))
+        return {
+            "number": int(lettered.group(1)),
             "episode": episode,
             "rawTitle": title,
         }
@@ -227,15 +241,60 @@ def fetch_campaign_posts(source):
     return posts
 
 
+def all_dates(post):
+    dates = [post.get("shooting"), post.get("submission"), post.get("publish")]
+    dates.extend(post.get("shootingDates") or [])
+    return [item for item in dates if item]
+
+
+def assign_placeholder_dates(posts, campaign="02", window_start="2026-11-01", window_end="2026-12-31"):
+    occupied = {item for post in posts for item in all_dates(post)}
+    undated = [
+        post
+        for post in posts
+        if post["campaign"] == campaign and not all_dates(post)
+    ]
+    if not undated:
+        return
+    campaign_dates = [
+        item
+        for post in posts
+        if post["campaign"] == campaign
+        for item in all_dates(post)
+    ]
+    start = date.fromisoformat(window_start)
+    end = date.fromisoformat(window_end)
+    cursor = start
+    if campaign_dates:
+        last = date.fromisoformat(max(campaign_dates)) + timedelta(days=1)
+        if start <= last <= end:
+            cursor = last
+    for post in undated:
+        while cursor <= end and (cursor.weekday() >= 5 or cursor.isoformat() in occupied):
+            cursor += timedelta(days=1)
+        if cursor > end:
+            cursor = start
+            while cursor <= end and cursor.isoformat() in occupied:
+                cursor += timedelta(days=1)
+        if cursor > end:
+            break
+        iso = cursor.isoformat()
+        post["publish"] = iso
+        extra = "月曆佔位（ClickUp 未填日子）。"
+        post["note"] = f"{post['note']} {extra}".strip() if post.get("note") else extra
+        occupied.add(iso)
+        cursor += timedelta(days=1)
+
+
 def fetch_plan():
     posts = []
     for source in SOURCES:
         posts.extend(fetch_campaign_posts(source))
+    assign_placeholder_dates(posts)
     dates = sorted(
-        date
+        item
         for post in posts
-        for date in (post["shooting"], post["submission"], post["publish"])
-        if date
+        for item in all_dates(post)
     )
     now = datetime.now(HKT).strftime("%Y/%m/%d %H:%M")
     return {
@@ -244,7 +303,7 @@ def fetch_plan():
         "source": f"ClickUp auto-sync · {now}",
         "timezone": "Asia/Hong_Kong",
         "dateRange": f"{dates[0]} – {dates[-1]}" if dates else "",
-        "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
+        "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；未填日子的 02 Reels 會先放在 11–12 月佔位。",
         "campaigns": [
             {
                 "id": source["id"],

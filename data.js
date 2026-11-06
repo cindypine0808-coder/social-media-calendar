@@ -1,10 +1,10 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/11/06 14:09",
+  "source": "ClickUp auto-sync · 2026/11/06 14:23",
   "timezone": "Asia/Hong_Kong",
-  "dateRange": "2026-09-21 – 2026-12-10",
-  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
+  "dateRange": "2026-09-21 – 2026-12-15",
+  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；未填日子的 02 Reels 會先放在 11–12 月佔位。",
   "campaigns": [
     {
       "id": "01",
@@ -346,8 +346,8 @@ const PLAN = {
       "hook": "",
       "shooting": "",
       "submission": "",
-      "publish": "",
-      "note": "Description 空白。",
+      "publish": "2026-12-04",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fq/EY1ML8HT56DRLRM"
     },
     {
@@ -362,8 +362,8 @@ const PLAN = {
       "hook": "",
       "shooting": "",
       "submission": "",
-      "publish": "",
-      "note": "Description 空白。",
+      "publish": "2026-12-07",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fr/EY1ML8HT56DRLRM"
     },
     {
@@ -378,9 +378,57 @@ const PLAN = {
       "hook": "",
       "shooting": "",
       "submission": "",
-      "publish": "",
-      "note": "Description 空白。",
+      "publish": "2026-12-09",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fu/EY1ML8HT56DRLRM"
+    },
+    {
+      "id": "z94x8ec8gg",
+      "campaign": "02",
+      "campaignName": "NSCA Promotion",
+      "number": 13,
+      "episode": 1,
+      "title": "KOL Miss K (NSCA-CPT)",
+      "status": "to do",
+      "purpose": "",
+      "hook": "",
+      "shooting": "",
+      "submission": "",
+      "publish": "2026-12-11",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gg/EY1ML8HT56DRLRM"
+    },
+    {
+      "id": "z94x8ec8gh",
+      "campaign": "02",
+      "campaignName": "NSCA Promotion",
+      "number": 13,
+      "episode": 2,
+      "title": "Miss K (NSCA-CPT)",
+      "status": "to do",
+      "purpose": "",
+      "hook": "",
+      "shooting": "",
+      "submission": "",
+      "publish": "2026-12-14",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gh/EY1ML8HT56DRLRM"
+    },
+    {
+      "id": "z94x8ec8gn",
+      "campaign": "02",
+      "campaignName": "NSCA Promotion",
+      "number": 14,
+      "episode": null,
+      "title": "Vanies (NSCA-CSCS)",
+      "status": "to do",
+      "purpose": "",
+      "hook": "",
+      "shooting": "",
+      "submission": "",
+      "publish": "2026-12-15",
+      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gn/EY1ML8HT56DRLRM"
     },
     {
       "id": "z94x8e76hc",
