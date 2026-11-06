@@ -7,6 +7,8 @@ const PHASES = [
 
 const TODAY = new Date();
 const PHASE_ORDER = { publish: 0, submission: 1, shooting: 2 };
+const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
+const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
   year: TODAY.getFullYear(),
   month: TODAY.getMonth(),
@@ -14,6 +16,11 @@ const state = {
   phases: new Set(["shooting", "submission", "publish"]),
   campaigns: new Set(["01", "02", "03"]),
 };
+
+let posts = SOURCE_POSTS.map((post) => ({ ...post }));
+let lastMove = null;
+let skipClick = false;
+let toastTimer = 0;
 
 function parseDate(iso) {
   const [year, month, day] = iso.split("-").map(Number);
@@ -62,12 +69,59 @@ function postLabel(post) {
   return `${post.campaign} R${post.number}`;
 }
 
+function phaseLabel(key) {
+  return PHASES.find((phase) => phase.key === key)?.label || key;
+}
+
+function loadOverrides() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveOverrides(overrides) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+}
+
+function applyOverrides() {
+  const overrides = loadOverrides();
+  posts = SOURCE_POSTS.map((post) => {
+    const extra = overrides[post.id];
+    if (!extra) return { ...post };
+    return {
+      ...post,
+      shooting: extra.shooting ?? post.shooting,
+      submission: extra.submission ?? post.submission,
+      publish: extra.publish ?? post.publish,
+    };
+  });
+}
+
+function overrideCount() {
+  return Object.values(loadOverrides()).reduce(
+    (count, extra) => count + Object.keys(extra || {}).length,
+    0
+  );
+}
+
+function isEdited(postId, phase) {
+  const extra = loadOverrides()[postId];
+  return Boolean(extra && Object.prototype.hasOwnProperty.call(extra, phase));
+}
+
+function getPost(postId) {
+  return posts.find((item) => item.id === postId);
+}
+
 function activePhases() {
   return PHASES.filter((phase) => state.phases.has(phase.key));
 }
 
-function sortedPosts(posts) {
-  return [...posts].sort((a, b) => {
+function sortedPosts(list) {
+  return [...list].sort((a, b) => {
     const aDate = a.publish || a.submission || a.shooting || "9999-99-99";
     const bDate = b.publish || b.submission || b.shooting || "9999-99-99";
     return aDate.localeCompare(bDate) || a.campaign.localeCompare(b.campaign) || a.number - b.number;
@@ -75,15 +129,15 @@ function sortedPosts(posts) {
 }
 
 function filteredPosts() {
-  return sortedPosts(PLAN.posts).filter((post) => {
+  return sortedPosts(posts).filter((post) => {
     if (!state.campaigns.has(post.campaign)) return false;
     if (!activePhases().some((phase) => post[phase.key])) return false;
     return true;
   });
 }
 
-function eventsForPosts(posts) {
-  return posts
+function eventsForPosts(list) {
+  return list
     .flatMap((post) =>
       activePhases()
         .filter((phase) => post[phase.key])
@@ -92,6 +146,7 @@ function eventsForPosts(posts) {
           phase: phase.key,
           phaseLabel: phase.label,
           date: post[phase.key],
+          edited: isEdited(post.id, phase.key),
         }))
     )
     .sort(
@@ -125,31 +180,50 @@ function updateViewVisibility() {
 function renderAll() {
   updateViewVisibility();
   renderStats();
+  renderEditBar();
   renderPostList();
   renderCalendar();
   renderTable();
 }
 
 function renderStats() {
-  const visible = PLAN.posts.filter((post) => state.campaigns.has(post.campaign));
+  const visible = posts.filter((post) => state.campaigns.has(post.campaign));
   const shooting = visible.filter((post) => post.shooting).length;
   document.getElementById("stats").innerHTML = `
     <div class="stat"><b>${visible.length}</b><span>Reels</span></div>
     <div class="stat"><b>${state.campaigns.size}</b><span>Campaigns</span></div>
     <div class="stat"><b>${shooting}</b><span>有拍攝日</span></div>
   `;
-  document.getElementById("sync-status").textContent = PLAN.source;
+  const local = overrideCount();
+  document.getElementById("sync-status").textContent = local
+    ? `${PLAN.source} · 這個瀏覽器已改 ${local} 個日子`
+    : PLAN.source;
+}
+
+function renderEditBar() {
+  const count = overrideCount();
+  const undoBtn = document.getElementById("undo-move");
+  const resetBtn = document.getElementById("reset-dates");
+  const downloadBtn = document.getElementById("download-data");
+  const copy = document.getElementById("edit-copy");
+
+  undoBtn.hidden = !lastMove;
+  resetBtn.hidden = !count;
+  downloadBtn.hidden = !count;
+  copy.textContent = count
+    ? `已在這個瀏覽器改了 ${count} 個日子。拖動色塊可繼續改期；這些改動不會寫回 ClickUp。`
+    : "在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動只存在這個瀏覽器，不會寫回 ClickUp。";
 }
 
 function renderPostList() {
   const list = document.getElementById("post-list");
-  const posts = filteredPosts();
-  if (!posts.length) {
+  const visible = filteredPosts();
+  if (!visible.length) {
     list.innerHTML = `<li class="empty">沒有符合篩選的 Reels。</li>`;
     return;
   }
 
-  list.innerHTML = posts
+  list.innerHTML = visible
     .map(
       (post) => `
       <li>
@@ -170,22 +244,22 @@ function isCompact() {
 
 function renderTable() {
   const body = document.getElementById("posts-table-body");
-  const posts = filteredPosts();
-  if (!posts.length) {
+  const visible = filteredPosts();
+  if (!visible.length) {
     body.innerHTML = `<tr><td colspan="7" class="empty">沒有符合篩選的 Reels。</td></tr>`;
     return;
   }
 
-  body.innerHTML = posts
+  body.innerHTML = visible
     .map(
       (post) => `
       <tr data-id="${post.id}" class="clickable-row">
         <td data-label="Campaign"><span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaign)} ${escapeHtml(post.campaignName)}</span></td>
         <td data-label="Reels">R${escapeHtml(String(post.number))}</td>
         <td data-label="Title" class="title-cell">${escapeHtml(post.title)}</td>
-        <td data-label="拍攝日" class="date-shooting">${escapeHtml(formatShort(post.shooting))}</td>
-        <td data-label="交片日" class="date-submission">${escapeHtml(formatShort(post.submission))}</td>
-        <td data-label="發佈日" class="date-publish">${escapeHtml(formatShort(post.publish))}</td>
+        <td data-label="拍攝日" class="date-shooting${isEdited(post.id, "shooting") ? " edited-date" : ""}">${escapeHtml(formatShort(post.shooting))}</td>
+        <td data-label="交片日" class="date-submission${isEdited(post.id, "submission") ? " edited-date" : ""}">${escapeHtml(formatShort(post.submission))}</td>
+        <td data-label="發佈日" class="date-publish${isEdited(post.id, "publish") ? " edited-date" : ""}">${escapeHtml(formatShort(post.publish))}</td>
         <td data-label="Status">${escapeHtml(post.status)}</td>
       </tr>
     `
@@ -228,7 +302,7 @@ function renderCalendar() {
       const isToday = key === iso(TODAY);
       const dayEvents = byDate[key] || [];
       const compact = isCompact();
-      const visible = dayEvents.slice(0, compact ? 2 : 3);
+      const visible = compact ? dayEvents.slice(0, 2) : dayEvents;
       const overflow = dayEvents.length - visible.length;
       return `
         <article class="day${outside ? " outside" : ""}${isToday ? " today" : ""}${dayEvents.length ? " has-events" : ""}" data-date="${key}">
@@ -241,14 +315,14 @@ function renderCalendar() {
             ${visible
               .map(
                 (event) => `
-              <button class="chip ${event.phase}" data-id="${event.id}" type="button">
+              <button class="chip ${event.phase}${event.edited ? " edited" : ""}" data-id="${event.id}" data-phase="${event.phase}" data-date="${event.date}" type="button" draggable="true">
                 <span class="mark ${campaignClass(event.campaign)}"></span>
                 <span>
                   <span class="label">
                     <span class="label-short">${escapeHtml(postLabel(event))}</span>
                     <span class="label-full">${escapeHtml(postLabel(event))} ${escapeHtml(event.title)}</span>
                   </span>
-                  <span class="meta">${escapeHtml(event.phaseLabel)}</span>
+                  <span class="meta">${escapeHtml(event.phaseLabel)}${event.edited ? " · 已改" : ""}</span>
                 </span>
               </button>
             `
@@ -285,7 +359,7 @@ function renderAgenda(events) {
       (event) => `
       <li>
         <button type="button" data-id="${event.id}">
-          <time><i class="dot ${event.phase}"></i>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}</time>
+          <time><i class="dot ${event.phase}"></i>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}${event.edited ? " · 已改" : ""}</time>
           <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
           <div class="sub">${escapeHtml(event.campaignName)}</div>
         </button>
@@ -306,7 +380,7 @@ function dateRow(label, value) {
 }
 
 function openDrawer(postId) {
-  const post = PLAN.posts.find((item) => item.id === postId);
+  const post = getPost(postId);
   if (!post) return;
 
   showDrawer(`
@@ -357,6 +431,243 @@ function closeDrawer() {
   document.getElementById("drawer").hidden = true;
   document.getElementById("backdrop").hidden = true;
   document.getElementById("drawer-body").innerHTML = "";
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.hidden = false;
+  toast.textContent = message;
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    toast.hidden = true;
+  }, 3200);
+}
+
+function moveDate(postId, phase, nextDate, { silent } = {}) {
+  const post = getPost(postId);
+  const source = SOURCE_POSTS.find((item) => item.id === postId);
+  if (!post || !source || !PHASES.some((item) => item.key === phase)) return;
+  if (!nextDate || post[phase] === nextDate) return;
+
+  const previous = post[phase];
+  const overrides = loadOverrides();
+  const extra = { ...(overrides[postId] || {}) };
+  if (source[phase] === nextDate) {
+    delete extra[phase];
+  } else {
+    extra[phase] = nextDate;
+  }
+  if (Object.keys(extra).length) overrides[postId] = extra;
+  else delete overrides[postId];
+  saveOverrides(overrides);
+  lastMove = { postId, phase, from: previous, to: nextDate };
+  applyOverrides();
+  renderAll();
+
+  if (!silent) {
+    const updated = getPost(postId);
+    showToast(
+      `${postLabel(updated)} ${phaseLabel(phase)} 已改到 ${formatLong(nextDate)}`
+    );
+  }
+}
+
+function undoMove() {
+  if (!lastMove) return;
+  const { postId, phase, from } = lastMove;
+  if (from) moveDate(postId, phase, from, { silent: true });
+  lastMove = null;
+  renderEditBar();
+  showToast("已復原上一步");
+}
+
+function resetDates() {
+  if (!overrideCount()) return;
+  if (!window.confirm("還原這個瀏覽器裡所有已改的日子，回到目前 ClickUp 同步的日期？")) {
+    return;
+  }
+  localStorage.removeItem(STORAGE_KEY);
+  lastMove = null;
+  applyOverrides();
+  renderAll();
+  showToast("已還原 ClickUp 日子");
+}
+
+function downloadData() {
+  const payload = {
+    ...PLAN,
+    posts,
+    source: `${PLAN.source} · local edits ${new Date().toLocaleString("zh-HK")}`,
+  };
+  const blob = new Blob([`const PLAN = ${JSON.stringify(payload, null, 2)};\n`], {
+    type: "text/javascript",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "data.js";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function dayFromPoint(x, y) {
+  const stack = document.elementsFromPoint?.(x, y) || [document.elementFromPoint(x, y)];
+  for (const node of stack) {
+    const day = node?.closest?.(".day[data-date]");
+    if (day) return day;
+  }
+  return null;
+}
+
+function highlightDay(x, y) {
+  document.querySelectorAll(".day.drop-target").forEach((day) => {
+    day.classList.remove("drop-target");
+  });
+  dayFromPoint(x, y)?.classList.add("drop-target");
+}
+
+function clearDayHighlights() {
+  document.querySelectorAll(".day.drop-target").forEach((day) => {
+    day.classList.remove("drop-target");
+  });
+}
+
+function payloadFromChip(chip) {
+  return {
+    id: chip.dataset.id,
+    phase: chip.dataset.phase,
+    from: chip.dataset.date,
+  };
+}
+
+function dropOnDay(payload, day) {
+  const nextDate = day?.dataset.date;
+  if (!payload?.id || !payload?.phase || !nextDate || nextDate === payload.from) return;
+  skipClick = true;
+  moveDate(payload.id, payload.phase, nextDate);
+}
+
+function bindCalendarDrag() {
+  const calendar = document.getElementById("calendar");
+  let session = null;
+  let htmlPayload = null;
+
+  calendar.addEventListener("dragstart", (event) => {
+    const chip = event.target.closest(".chip[data-id][data-phase]");
+    if (!chip) {
+      event.preventDefault();
+      return;
+    }
+    htmlPayload = payloadFromChip(chip);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", JSON.stringify(htmlPayload));
+    chip.classList.add("dragging");
+    document.body.classList.add("is-dragging");
+    closeDrawer();
+    skipClick = true;
+  });
+
+  calendar.addEventListener("dragend", () => {
+    document.body.classList.remove("is-dragging");
+    document.querySelectorAll(".chip.dragging").forEach((chip) => chip.classList.remove("dragging"));
+    clearDayHighlights();
+    htmlPayload = null;
+  });
+
+  calendar.addEventListener("dragover", (event) => {
+    const day = event.target.closest(".day[data-date]");
+    if (!day) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    highlightDay(event.clientX, event.clientY);
+  });
+
+  calendar.addEventListener("dragleave", (event) => {
+    if (event.target.closest(".day[data-date]") && !calendar.contains(event.relatedTarget)) {
+      clearDayHighlights();
+    }
+  });
+
+  calendar.addEventListener("drop", (event) => {
+    const day = event.target.closest(".day[data-date]");
+    if (!day) return;
+    event.preventDefault();
+    let payload = htmlPayload;
+    try {
+      payload = JSON.parse(event.dataTransfer.getData("text/plain")) || payload;
+    } catch {
+      /* keep dragstart payload */
+    }
+    dropOnDay(payload, day);
+  });
+
+  const endSession = (event) => {
+    if (!session || event.pointerId !== session.pointerId) return;
+    const current = session;
+    session = null;
+    document.body.classList.remove("is-dragging");
+    clearDayHighlights();
+    current.ghost?.remove();
+    current.chip.classList.remove("dragging");
+    try {
+      current.chip.releasePointerCapture(current.pointerId);
+    } catch {
+      /* already released */
+    }
+    if (!current.started) return;
+    dropOnDay(
+      { id: current.id, phase: current.phase, from: current.from },
+      dayFromPoint(event.clientX, event.clientY)
+    );
+  };
+
+  calendar.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch" || event.button !== 0) return;
+    const chip = event.target.closest(".chip[data-id][data-phase]");
+    if (!chip) return;
+    session = {
+      pointerId: event.pointerId,
+      chip,
+      id: chip.dataset.id,
+      phase: chip.dataset.phase,
+      from: chip.dataset.date,
+      x: event.clientX,
+      y: event.clientY,
+      started: false,
+      ghost: null,
+    };
+  });
+
+  window.addEventListener(
+    "pointermove",
+    (event) => {
+      if (!session || event.pointerId !== session.pointerId) return;
+      const distance = Math.hypot(event.clientX - session.x, event.clientY - session.y);
+      if (!session.started) {
+        if (distance < 8) return;
+        session.started = true;
+        closeDrawer();
+        session.chip.classList.add("dragging");
+        document.body.classList.add("is-dragging");
+        session.chip.setPointerCapture(session.pointerId);
+        const ghost = session.chip.cloneNode(true);
+        ghost.classList.add("chip-ghost");
+        ghost.removeAttribute("draggable");
+        ghost.style.width = `${session.chip.offsetWidth}px`;
+        document.body.appendChild(ghost);
+        session.ghost = ghost;
+      }
+      event.preventDefault();
+      session.ghost.style.transform = `translate(${event.clientX + 10}px, ${event.clientY + 10}px)`;
+      highlightDay(event.clientX, event.clientY);
+    },
+    { passive: false }
+  );
+
+  window.addEventListener("pointerup", endSession);
+  window.addEventListener("pointercancel", endSession);
 }
 
 function bind() {
@@ -415,7 +726,17 @@ function bind() {
     });
   });
 
+  document.getElementById("undo-move").addEventListener("click", undoMove);
+  document.getElementById("reset-dates").addEventListener("click", resetDates);
+  document.getElementById("download-data").addEventListener("click", downloadData);
+
   document.addEventListener("click", (event) => {
+    if (skipClick) {
+      skipClick = false;
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     const target = event.target.closest(
       "[data-id], [data-date], #drawer-close, #backdrop, .clickable-row"
     );
@@ -425,7 +746,7 @@ function bind() {
       return;
     }
     const day = target.closest(".day[data-date]");
-    if (day && !target.closest("#drawer")) {
+    if (day && !target.closest("#drawer") && !target.closest(".chip")) {
       const dateEvents = eventsForDate(day.dataset.date);
       if (dateEvents.length > 1) {
         openDay(day.dataset.date);
@@ -445,6 +766,8 @@ function bind() {
     }
   });
 
+  bindCalendarDrag();
+
   let compact = isCompact();
   window.addEventListener("resize", () => {
     const next = isCompact();
@@ -454,5 +777,6 @@ function bind() {
   });
 }
 
+applyOverrides();
 bind();
 renderAll();

@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=c0102-22" />
+    <link rel="stylesheet" href="styles.css?v=c0102-23" />
   </head>
   <body>
     <div class="app">
@@ -96,7 +96,16 @@
         <span class="legend-item"><i class="swatch ssf"></i>Campaign 01 What's SSF</span>
         <span class="legend-item"><i class="swatch nsca"></i>Campaign 02 NSCA</span>
         <span class="legend-item"><i class="swatch jason"></i>Campaign 03 Jason IP</span>
-        <span class="legend-note">01 只顯示 R5–R10。03 顯示 R1–R10。日期以 ClickUp 為主檔，約每 15 分鐘自動同步。</span>
+        <span class="legend-note">01 只顯示 R5–R10。03 顯示 R1–R10。日期以 ClickUp 為主檔；可在月曆上拖動色塊改期。</span>
+      </div>
+
+      <div class="edit-bar" id="edit-bar">
+        <p class="edit-copy" id="edit-copy">在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動只存在這個瀏覽器，不會寫回 ClickUp。</p>
+        <div class="edit-actions">
+          <button type="button" class="today-btn" id="undo-move" hidden>復原上一步</button>
+          <button type="button" class="today-btn" id="reset-dates" hidden>還原 ClickUp 日子</button>
+          <button type="button" class="today-btn" id="download-data" hidden>下載 data.js</button>
+        </div>
       </div>
 
       <main class="layout" id="calendar-layout">
@@ -140,6 +149,7 @@
       </section>
     </div>
 
+    <div class="toast" id="toast" hidden></div>
     <div class="drawer-backdrop" id="backdrop" hidden></div>
     <aside class="drawer" id="drawer" hidden>
       <button type="button" class="drawer-close" id="drawer-close">Close</button>
@@ -147,8 +157,8 @@
     </aside>
 
     <script>
-      document.write('<script src="data.js?v=c0102-22&t=' + Date.now() + '"><\/script>');
+      document.write('<script src="data.js?v=c0102-23&t=' + Date.now() + '"><\/script>');
     </script>
-    <script src="app.js?v=c0102-22"></script>
+    <script src="app.js?v=c0102-23"></script>
   </body>
 </html>
