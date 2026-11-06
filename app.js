@@ -65,8 +65,19 @@ function campaignClass(campaign) {
   return "ssf";
 }
 
+function postCode(post) {
+  return `R${post.number}${post.episode ? ` EP${post.episode}` : ""}`;
+}
+
 function postLabel(post) {
-  return `${post.campaign} R${post.number}`;
+  return `${post.campaign} ${postCode(post)}`;
+}
+
+function phaseDates(post, phase) {
+  if (phase === "shooting" && post.shootingDates?.length) {
+    return post.shootingDates.filter(Boolean);
+  }
+  return post[phase] ? [post[phase]] : [];
 }
 
 function phaseLabel(key) {
@@ -94,6 +105,7 @@ function applyOverrides() {
     return {
       ...post,
       shooting: extra.shooting ?? post.shooting,
+      shootingDates: extra.shootingDates ?? post.shootingDates,
       submission: extra.submission ?? post.submission,
       publish: extra.publish ?? post.publish,
     };
@@ -124,37 +136,44 @@ function sortedPosts(list) {
   return [...list].sort((a, b) => {
     const aDate = a.publish || a.submission || a.shooting || "9999-99-99";
     const bDate = b.publish || b.submission || b.shooting || "9999-99-99";
-    return aDate.localeCompare(bDate) || a.campaign.localeCompare(b.campaign) || a.number - b.number;
+    return (
+      aDate.localeCompare(bDate) ||
+      a.campaign.localeCompare(b.campaign) ||
+      a.number - b.number ||
+      (a.episode || 0) - (b.episode || 0)
+    );
   });
 }
 
 function filteredPosts() {
   return sortedPosts(posts).filter((post) => {
     if (!state.campaigns.has(post.campaign)) return false;
-    if (!activePhases().some((phase) => post[phase.key])) return false;
-    return true;
+    const hasAny = PHASES.some((phase) => phaseDates(post, phase.key).length);
+    if (!hasAny) return true;
+    return activePhases().some((phase) => phaseDates(post, phase.key).length);
   });
 }
 
 function eventsForPosts(list) {
   return list
     .flatMap((post) =>
-      activePhases()
-        .filter((phase) => post[phase.key])
-        .map((phase) => ({
+      activePhases().flatMap((phase) =>
+        phaseDates(post, phase.key).map((date) => ({
           ...post,
           phase: phase.key,
           phaseLabel: phase.label,
-          date: post[phase.key],
+          date,
           edited: isEdited(post.id, phase.key),
         }))
+      )
     )
     .sort(
       (a, b) =>
         a.date.localeCompare(b.date) ||
         PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] ||
         a.campaign.localeCompare(b.campaign) ||
-        a.number - b.number
+        a.number - b.number ||
+        (a.episode || 0) - (b.episode || 0)
     );
 }
 
@@ -255,7 +274,7 @@ function renderTable() {
       (post) => `
       <tr data-id="${post.id}" class="clickable-row">
         <td data-label="Campaign"><span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaign)} ${escapeHtml(post.campaignName)}</span></td>
-        <td data-label="Reels">R${escapeHtml(String(post.number))}</td>
+        <td data-label="Reels">${escapeHtml(postCode(post))}</td>
         <td data-label="Title" class="title-cell">${escapeHtml(post.title)}</td>
         <td data-label="拍攝日" class="date-shooting${isEdited(post.id, "shooting") ? " edited-date" : ""}">${escapeHtml(formatShort(post.shooting))}</td>
         <td data-label="交片日" class="date-submission${isEdited(post.id, "submission") ? " edited-date" : ""}">${escapeHtml(formatShort(post.submission))}</td>
@@ -376,7 +395,12 @@ function showDrawer(html) {
 }
 
 function dateRow(label, value) {
-  return `<div><span>${escapeHtml(label)}</span><b>${value ? formatLong(value) : "TBC"}</b></div>`;
+  const text = Array.isArray(value)
+    ? value.filter(Boolean).map(formatLong).join("、")
+    : value
+      ? formatLong(value)
+      : "TBC";
+  return `<div><span>${escapeHtml(label)}</span><b>${text || "TBC"}</b></div>`;
 }
 
 function openDrawer(postId) {
@@ -384,7 +408,7 @@ function openDrawer(postId) {
   if (!post) return;
 
   showDrawer(`
-    <p class="kicker">Campaign ${escapeHtml(post.campaign)} · R${escapeHtml(String(post.number))}</p>
+    <p class="kicker">Campaign ${escapeHtml(post.campaign)} · ${escapeHtml(postCode(post))}</p>
     <h2>${escapeHtml(post.title)}</h2>
     <div class="pills">
       <span class="pill ${campaignClass(post.campaign)}">${escapeHtml(post.campaignName)}</span>
@@ -393,7 +417,7 @@ function openDrawer(postId) {
     <div class="timeline">
       ${post.purpose ? `<div><span>目的</span><b>${escapeHtml(post.purpose)}</b></div>` : ""}
       ${post.hook ? `<div><span>Hook</span><b>${escapeHtml(post.hook)}</b></div>` : ""}
-      ${dateRow("拍攝日", post.shooting)}
+      ${dateRow("拍攝日", post.shootingDates?.length ? post.shootingDates : post.shooting)}
       ${dateRow("交片日", post.submission)}
       ${dateRow("發佈日", post.publish)}
     </div>
@@ -443,16 +467,25 @@ function showToast(message) {
   }, 3200);
 }
 
-function moveDate(postId, phase, nextDate, { silent } = {}) {
+function moveDate(postId, phase, nextDate, { silent, from } = {}) {
   const post = getPost(postId);
   const source = SOURCE_POSTS.find((item) => item.id === postId);
   if (!post || !source || !PHASES.some((item) => item.key === phase)) return;
-  if (!nextDate || post[phase] === nextDate) return;
+  const previous = from || post[phase];
+  if (!nextDate || previous === nextDate) return;
 
-  const previous = post[phase];
   const overrides = loadOverrides();
   const extra = { ...(overrides[postId] || {}) };
-  if (source[phase] === nextDate) {
+  if (phase === "shooting" && (post.shootingDates || []).length > 1) {
+    const dates = post.shootingDates.map((date) => (date === previous ? nextDate : date));
+    extra.shootingDates = dates;
+    extra.shooting = dates[0];
+    const original = source.shootingDates || [source.shooting];
+    if (dates.join() === original.join()) {
+      delete extra.shootingDates;
+      delete extra.shooting;
+    }
+  } else if (source[phase] === nextDate) {
     delete extra[phase];
   } else {
     extra[phase] = nextDate;
@@ -546,7 +579,7 @@ function dropOnDay(payload, day) {
   const nextDate = day?.dataset.date;
   if (!payload?.id || !payload?.phase || !nextDate || nextDate === payload.from) return;
   skipClick = true;
-  moveDate(payload.id, payload.phase, nextDate);
+  moveDate(payload.id, payload.phase, nextDate, { from: payload.from });
 }
 
 function bindCalendarDrag() {

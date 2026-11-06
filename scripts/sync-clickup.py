@@ -62,36 +62,66 @@ def due_to_iso(ms):
 
 def parse_reel(name):
     text = str(name or "").strip()
-    if re.search(r"photo\s+shooting|^R[\d,\s]+shooting\b|script\s+share", text, re.I):
+    if re.search(r"photo\s+shooting|script\s+share", text, re.I):
         return None
-    match = re.match(r"^R(\d+)\s*[:：]\s*(.+)$", text, re.I) or re.match(
-        r"^R(\d+)\s+(.+)$", text, re.I
+    if re.search(r"^R[\d,\sR]+shooting\b", text, re.I):
+        return None
+    colon = re.search(
+        r"R(\d+)([a-z])?\s*[:：]\s*(?:Ep(?:isode)?\s*(\d+)\s*[,:：]\s*)?(.+)$",
+        text,
+        re.I,
     )
-    if not match:
+    if colon:
+        title = colon.group(4).strip()
+        if not title or re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
+            return None
+        episode = int(colon.group(3)) if colon.group(3) else None
+        if episode is None and colon.group(2):
+            episode = ord(colon.group(2).lower()) - ord("a") + 1
+        if episode is None:
+            trailing = re.search(r"\bEP\s*(\d+)\s*$", title, re.I)
+            if trailing:
+                episode = int(trailing.group(1))
+        return {
+            "number": int(colon.group(1)),
+            "episode": episode,
+            "rawTitle": title,
+        }
+    spaced = re.match(r"^R(\d+)\s+(.+)$", text, re.I)
+    if not spaced:
         return None
-    title = match.group(2).strip()
+    title = spaced.group(2).strip()
     if re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
         return None
-    return {"number": int(match.group(1)), "rawTitle": title}
+    return {"number": int(spaced.group(1)), "episode": None, "rawTitle": title}
 
 
 def display_title(raw):
     wrapped = re.match(r"^《([^》]+)》(.*)$", raw)
     if wrapped:
         extra = wrapped.group(2).strip()
-        return f"{wrapped.group(1)} · {extra}" if extra else wrapped.group(1)
-    return raw.strip()
+        title = f"{wrapped.group(1)} · {extra}" if extra else wrapped.group(1)
+    else:
+        title = raw.strip()
+    stripped = re.sub(r"\s*\bEP\s*\d+\s*$", "", title, flags=re.I).strip()
+    return stripped or title
+
+
+def parse_labeled_dates(text, label):
+    match = re.search(rf"{label}[^\n]*", text or "", re.I)
+    line = match.group(0) if match else ""
+    return [
+        to_iso(year, month, day)
+        for year, month, day in re.findall(
+            r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日",
+            line,
+        )
+    ]
 
 
 def parse_labeled_date(text, label):
-    match = re.search(
-        rf"{label}[^\d]{{0,40}}(\d{{4}})\s*年\s*(\d{{1,2}})\s*月\s*(\d{{1,2}})\s*日",
-        text or "",
-        re.I,
-    )
-    if not match:
-        return ""
-    return to_iso(*match.groups())
+    dates = parse_labeled_dates(text, label)
+    return dates[0] if dates else ""
 
 
 def parse_remarks_shooting(remarks):
@@ -135,7 +165,8 @@ def build_post(task, source):
         return None
     text = task.get("text_content") or ""
     remarks = remarks_value(task.get("fields"))
-    shooting_from_text = parse_labeled_date(text, "拍攝日")
+    shooting_dates = parse_labeled_dates(text, "拍攝日")
+    shooting_from_text = shooting_dates[0] if shooting_dates else ""
     shooting = shooting_from_text or parse_remarks_shooting(remarks)
     submission_from_text = parse_labeled_date(text, "交片日")
     submission = submission_from_text or due_to_iso(task.get("time_mgmt", {}).get("due_date"))
@@ -150,11 +181,12 @@ def build_post(task, source):
     ad = re.search(r"落廣告[^\n]*", text)
     if ad:
         notes.append(ad.group(0).strip())
-    return {
+    post = {
         "id": task["id"],
         "campaign": source["id"],
         "campaignName": source["name"],
         "number": reel["number"],
+        "episode": reel.get("episode"),
         "title": display_title(reel["rawTitle"]),
         "status": (task.get("status") or {}).get("status") or "",
         "purpose": line_value(text, "目的") or line_value(text, "主要目的"),
@@ -165,6 +197,9 @@ def build_post(task, source):
         "note": " ".join(notes),
         "url": share_url(task["id"], source["token"]),
     }
+    if len(shooting_dates) > 1:
+        post["shootingDates"] = shooting_dates
+    return post
 
 
 def fetch_task(task_id, token):
@@ -188,7 +223,7 @@ def fetch_campaign_posts(source):
         post = build_post(task, source)
         if post:
             posts.append(post)
-    posts.sort(key=lambda item: item["number"])
+    posts.sort(key=lambda item: (item["number"], item.get("episode") or 0, item["title"]))
     return posts
 
 
@@ -209,7 +244,7 @@ def fetch_plan():
         "source": f"ClickUp auto-sync · {now}",
         "timezone": "Asia/Hong_Kong",
         "dateRange": f"{dates[0]} – {dates[-1]}" if dates else "",
-        "note": "Campaign 01 只顯示 R5 起。Campaign 03 顯示 R1–R10。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
+        "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主，Remarks / Due date 作後備。",
         "campaigns": [
             {
                 "id": source["id"],
@@ -232,7 +267,9 @@ def main():
     print(f"Wrote {len(plan['posts'])} posts from ClickUp")
     for post in plan["posts"]:
         print(
-            f"{post['campaign']} R{post['number']}  shoot={post['shooting'] or '-'}  "
+            f"{post['campaign']} R{post['number']}"
+            f"{' EP' + str(post['episode']) if post.get('episode') else ''}  "
+            f"shoot={post['shooting'] or '-'}  "
             f"sub={post['submission'] or '-'}  pub={post['publish'] or '-'}"
         )
 
