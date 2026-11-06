@@ -173,6 +173,27 @@ def remarks_value(fields):
     return ""
 
 
+def add_years(iso, years=1):
+    if not iso:
+        return iso
+    year, month, day = iso.split("-")
+    return f"{int(year) + years}-{month}-{day}"
+
+
+def sequence_dates(shooting, submission, publish):
+    notes = []
+    if shooting and submission and submission < shooting:
+        submission = add_years(submission)
+        notes.append("交片年已按拍攝日調整為翌年。")
+    if submission and publish and publish < submission:
+        publish = add_years(publish)
+        notes.append("發佈年已按交片日調整為翌年。")
+    elif shooting and publish and publish < shooting:
+        publish = add_years(publish)
+        notes.append("發佈年已按拍攝日調整為翌年。")
+    return shooting, submission, publish, notes
+
+
 def build_post(task, source):
     reel = parse_reel(task.get("name"))
     if not reel or reel["number"] < source["minReel"]:
@@ -185,6 +206,7 @@ def build_post(task, source):
     submission_from_text = parse_labeled_date(text, "交片日")
     submission = submission_from_text or due_to_iso(task.get("time_mgmt", {}).get("due_date"))
     publish = parse_labeled_date(text, "發佈日")
+    shooting, submission, publish, year_notes = sequence_dates(shooting, submission, publish)
     notes = []
     if not text.strip():
         notes.append("Description 空白。")
@@ -192,6 +214,7 @@ def build_post(task, source):
         notes.append(f"拍攝日來自 Remarks：{remarks}")
     if not submission_from_text and submission:
         notes.append("交片日來自 Due date。")
+    notes.extend(year_notes)
     ad = re.search(r"落廣告[^\n]*", text)
     if ad:
         notes.append(ad.group(0).strip())
@@ -303,7 +326,7 @@ def fetch_plan():
         "source": f"ClickUp auto-sync · {now}",
         "timezone": "Asia/Hong_Kong",
         "dateRange": f"{dates[0]} – {dates[-1]}" if dates else "",
-        "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；未填日子的 02 Reels 會先放在 11–12 月佔位。",
+        "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。",
         "campaigns": [
             {
                 "id": source["id"],

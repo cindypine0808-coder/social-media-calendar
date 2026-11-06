@@ -35,10 +35,10 @@ function iso(date) {
 
 function formatShort(isoDate) {
   if (!isoDate) return "TBC";
-  return parseDate(isoDate).toLocaleDateString("zh-HK", {
-    month: "short",
-    day: "numeric",
-  });
+  const date = parseDate(isoDate);
+  const options = { month: "short", day: "numeric" };
+  if (date.getFullYear() !== TODAY.getFullYear()) options.year = "numeric";
+  return date.toLocaleDateString("zh-HK", options);
 }
 
 function formatLong(isoDate) {

@@ -1,10 +1,10 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/11/06 14:23",
+  "source": "ClickUp auto-sync · 2026/11/06 18:52",
   "timezone": "Asia/Hong_Kong",
-  "dateRange": "2026-09-21 – 2026-12-15",
-  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；未填日子的 02 Reels 會先放在 11–12 月佔位。",
+  "dateRange": "2026-09-21 – 2027-02-23",
+  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。",
   "campaigns": [
     {
       "id": "01",
@@ -344,10 +344,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-04",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-10-10",
+      "submission": "2026-11-10",
+      "publish": "2027-01-21",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fq/EY1ML8HT56DRLRM"
     },
     {
@@ -360,10 +360,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-07",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-10-10",
+      "submission": "2026-11-10",
+      "publish": "2027-01-23",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fr/EY1ML8HT56DRLRM"
     },
     {
@@ -376,10 +376,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-09",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-10-10",
+      "submission": "2026-11-10",
+      "publish": "2027-01-27",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fu/EY1ML8HT56DRLRM"
     },
     {
@@ -392,10 +392,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-11",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-11-08",
+      "submission": "2026-12-08",
+      "publish": "2027-02-09",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gg/EY1ML8HT56DRLRM"
     },
     {
@@ -408,10 +408,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-14",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-11-08",
+      "submission": "2026-12-08",
+      "publish": "2027-02-16",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gh/EY1ML8HT56DRLRM"
     },
     {
@@ -424,10 +424,10 @@ const PLAN = {
       "status": "to do",
       "purpose": "",
       "hook": "",
-      "shooting": "",
-      "submission": "",
-      "publish": "2026-12-15",
-      "note": "Description 空白。 月曆佔位（ClickUp 未填日子）。",
+      "shooting": "2026-11-15",
+      "submission": "2026-12-15",
+      "publish": "2027-02-23",
+      "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gn/EY1ML8HT56DRLRM"
     },
     {
