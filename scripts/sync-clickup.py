@@ -180,15 +180,21 @@ def add_years(iso, years=1):
     return f"{int(year) + years}-{month}-{day}"
 
 
+def is_year_wrap(earlier, later):
+    start = date.fromisoformat(earlier)
+    end = date.fromisoformat(later)
+    return start.month >= 10 and end.month <= 3
+
+
 def sequence_dates(shooting, submission, publish):
     notes = []
-    if shooting and submission and submission < shooting:
+    if shooting and submission and submission < shooting and is_year_wrap(shooting, submission):
         submission = add_years(submission)
         notes.append("交片年已按拍攝日調整為翌年。")
-    if submission and publish and publish < submission:
+    if submission and publish and publish < submission and is_year_wrap(submission, publish):
         publish = add_years(publish)
         notes.append("發佈年已按交片日調整為翌年。")
-    elif shooting and publish and publish < shooting:
+    elif shooting and publish and publish < shooting and is_year_wrap(shooting, publish):
         publish = add_years(publish)
         notes.append("發佈年已按拍攝日調整為翌年。")
     return shooting, submission, publish, notes
@@ -309,11 +315,53 @@ def assign_placeholder_dates(posts, campaign="02", window_start="2026-11-01", wi
         cursor += timedelta(days=1)
 
 
+def next_open_weekday(cursor, end, occupied):
+    while cursor <= end and (cursor.weekday() >= 5 or cursor.isoformat() in occupied):
+        cursor += timedelta(days=1)
+    return cursor
+
+
+def replace_overdue_todo_shooting(posts, campaign="02", min_number=11):
+    today = datetime.now(HKT).date()
+    occupied = {item for post in posts for item in all_dates(post)}
+    groups = {}
+    for post in posts:
+        if post["campaign"] != campaign or (post.get("number") or 0) < min_number:
+            continue
+        if (post.get("status") or "").lower() in {"complete", "closed", "done"}:
+            continue
+        shoot = post.get("shooting")
+        if not shoot:
+            continue
+        shoot_day = date.fromisoformat(shoot)
+        if shoot_day >= today:
+            continue
+        groups.setdefault(shoot, []).append(post)
+    cursor = today + timedelta(days=1)
+    end = date(2026, 12, 31)
+    for old, items in groups.items():
+        cursor = next_open_weekday(cursor, end, occupied)
+        if cursor > end:
+            break
+        iso = cursor.isoformat()
+        extra = "拍攝日已改為月曆佔位（ClickUp 拍攝日已過）。"
+        for post in items:
+            post["shooting"] = iso
+            if post.get("shootingDates"):
+                post["shootingDates"] = [
+                    iso if item == old else item for item in post["shootingDates"]
+                ]
+            post["note"] = f"{post['note']} {extra}".strip() if post.get("note") else extra
+        occupied.add(iso)
+        cursor += timedelta(days=1)
+
+
 def fetch_plan():
     posts = []
     for source in SOURCES:
         posts.extend(fetch_campaign_posts(source))
     assign_placeholder_dates(posts)
+    replace_overdue_todo_shooting(posts)
     dates = sorted(
         item
         for post in posts
