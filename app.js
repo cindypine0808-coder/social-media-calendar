@@ -196,8 +196,39 @@ function updateViewVisibility() {
   });
 }
 
+function formatHeadingDate(isoDate) {
+  if (!isoDate) return "TBC";
+  const date = parseDate(isoDate);
+  const day = date.getDate();
+  const month = date.toLocaleDateString("en-GB", { month: "short" });
+  if (date.getFullYear() !== TODAY.getFullYear()) {
+    return `${day} ${month} ${date.getFullYear()}`;
+  }
+  return `${day} ${month}`;
+}
+
+function lastPublishDate(campaignId) {
+  const dates = posts
+    .filter((post) => post.campaign === campaignId && post.publish)
+    .map((post) => post.publish)
+    .sort();
+  return dates[dates.length - 1] || "";
+}
+
+function renderCampaignSummary() {
+  const list = document.querySelector(".campaign-summary");
+  if (!list) return;
+  list.innerHTML = (PLAN.campaigns || [])
+    .map((campaign) => {
+      const last = formatHeadingDate(lastPublishDate(campaign.id));
+      return `<li>Campaign ${escapeHtml(campaign.id)}: ${escapeHtml(campaign.name)}（預計最後一支影片的發佈日：${escapeHtml(last)}）</li>`;
+    })
+    .join("");
+}
+
 function renderAll() {
   updateViewVisibility();
+  renderCampaignSummary();
   renderStats();
   renderEditBar();
   renderPostList();
