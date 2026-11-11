@@ -22,6 +22,9 @@
   --medium: #c9893a;
   --low: #6f7a72;
   --today: #f2c14e;
+  --holiday: #d94a4a;
+  --cpt: #2bb3a8;
+  --cscs: #f06a1a;
 }
 
 * {
@@ -443,6 +446,24 @@ select {
   background: var(--class);
 }
 
+.dot.holiday,
+.swatch.holiday,
+.mark.holiday {
+  background: var(--holiday);
+}
+
+.dot.cpt,
+.swatch.cpt,
+.mark.cpt {
+  background: var(--cpt);
+}
+
+.dot.cscs,
+.swatch.cscs,
+.mark.cscs {
+  background: var(--cscs);
+}
+
 .swatch.ssf,
 .mark.ssf {
   background: var(--awareness);
@@ -548,10 +569,86 @@ select {
   outline-offset: -1px;
 }
 
+.day.day-holiday {
+  background: #2a1818;
+  box-shadow: inset 3px 0 0 var(--holiday);
+}
+
+.day.day-holiday.outside {
+  background: #221414;
+}
+
+.day.day-cpt:not(.day-holiday) {
+  background: #162422;
+  box-shadow: inset 3px 0 0 var(--cpt);
+}
+
+.day.day-cpt:not(.day-holiday).outside {
+  background: #121c1b;
+}
+
+.day.day-cscs:not(.day-holiday) {
+  background: #271c14;
+  box-shadow: inset 3px 0 0 var(--cscs);
+}
+
+.day.day-cscs:not(.day-holiday).outside {
+  background: #1f1711;
+}
+
+.day.day-holiday.day-cscs {
+  box-shadow: inset 3px 0 0 var(--holiday), inset 0 3px 0 var(--cscs);
+}
+
+.day.day-holiday.day-cpt {
+  box-shadow: inset 3px 0 0 var(--holiday), inset 0 3px 0 var(--cpt);
+}
+
 .date-num {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 4px;
   margin-bottom: 6px;
+}
+
+.date-num-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.day-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.flag {
+  padding: 1px 5px;
+  border-radius: 99px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.flag.holiday {
+  background: rgba(217, 74, 74, 0.24);
+  color: #f3b0b0;
+}
+
+.flag.cpt {
+  background: rgba(43, 179, 168, 0.24);
+  color: #8fe6dc;
+}
+
+.flag.cscs {
+  background: rgba(240, 106, 26, 0.24);
+  color: #f6b888;
 }
 
 .events {
@@ -596,6 +693,24 @@ select {
 
 .chip.class {
   border-left-color: var(--class);
+}
+
+.chip.holiday {
+  border-left-color: var(--holiday);
+}
+
+.chip.cpt {
+  border-left-color: var(--cpt);
+}
+
+.chip.cscs {
+  border-left-color: var(--cscs);
+}
+
+.chip.marker {
+  cursor: default;
+  touch-action: auto;
+  user-select: none;
 }
 
 .chip .label {
@@ -786,6 +901,53 @@ body.is-dragging {
   font-size: 30px;
   font-weight: 600;
   line-height: 1.15;
+}
+
+.day-markers {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 20px;
+}
+
+.day-marker {
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-left: 3px solid transparent;
+}
+
+.day-marker.holiday {
+  border-left-color: var(--holiday);
+}
+
+.day-marker.cpt {
+  border-left-color: var(--cpt);
+}
+
+.day-marker.cscs {
+  border-left-color: var(--cscs);
+}
+
+.day-marker b,
+.day-marker span {
+  display: block;
+}
+
+.day-marker b {
+  font-size: 13px;
+}
+
+.day-marker span {
+  margin-top: 2px;
+  color: var(--ink);
+}
+
+.day-marker .sub {
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .pills {
@@ -1037,6 +1199,15 @@ body.is-dragging {
     color: var(--ink);
     font-size: 9px;
     text-align: center;
+  }
+
+  .flag {
+    padding: 0 4px;
+    font-size: 8px;
+  }
+
+  .date-num-left {
+    gap: 3px;
   }
 
   .chip {

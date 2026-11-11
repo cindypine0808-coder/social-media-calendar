@@ -4,7 +4,7 @@ const PLAN = {
   "source": "ClickUp auto-sync · 2026/11/06 19:10 · local edits 6/11/2026 下午7:26:05",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2027-02-23",
-  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。",
+  "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。月曆另標香港公眾假期及 2027 NSCA CPT / CSCS 上課日。",
   "campaigns": [
     {
       "id": "01",

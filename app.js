@@ -7,6 +7,68 @@ const PHASES = [
 
 const TODAY = new Date();
 const PHASE_ORDER = { publish: 0, submission: 1, shooting: 2 };
+const MARKER_KIND_ORDER = { holiday: 0, cpt: 1, cscs: 2 };
+const MARKER_KINDS = {
+  holiday: { label: "香港公眾假期", short: "假期" },
+  cpt: { label: "CPT 工作坊", short: "CPT" },
+  cscs: { label: "CSCS 工作坊", short: "CSCS" },
+};
+const MARKERS = [
+  { date: "2026-01-01", kind: "holiday", label: "元旦" },
+  { date: "2026-02-17", kind: "holiday", label: "農曆年初一" },
+  { date: "2026-02-18", kind: "holiday", label: "農曆年初二" },
+  { date: "2026-02-19", kind: "holiday", label: "農曆年初三" },
+  { date: "2026-04-03", kind: "holiday", label: "耶穌受難節" },
+  { date: "2026-04-04", kind: "holiday", label: "耶穌受難節翌日" },
+  { date: "2026-04-06", kind: "holiday", label: "清明節翌日" },
+  { date: "2026-04-07", kind: "holiday", label: "復活節星期一翌日" },
+  { date: "2026-05-01", kind: "holiday", label: "勞動節" },
+  { date: "2026-05-25", kind: "holiday", label: "佛誕翌日" },
+  { date: "2026-06-19", kind: "holiday", label: "端午節" },
+  { date: "2026-07-01", kind: "holiday", label: "香港特別行政區成立紀念日" },
+  { date: "2026-09-26", kind: "holiday", label: "中秋節翌日" },
+  { date: "2026-10-01", kind: "holiday", label: "國慶日" },
+  { date: "2026-10-19", kind: "holiday", label: "重陽節翌日" },
+  { date: "2026-12-25", kind: "holiday", label: "聖誕節" },
+  { date: "2026-12-26", kind: "holiday", label: "聖誕節後第一個周日" },
+  { date: "2027-01-01", kind: "holiday", label: "元旦" },
+  { date: "2027-02-06", kind: "holiday", label: "農曆年初一" },
+  { date: "2027-02-08", kind: "holiday", label: "農曆年初三" },
+  { date: "2027-02-09", kind: "holiday", label: "農曆年初四" },
+  { date: "2027-03-26", kind: "holiday", label: "耶穌受難節" },
+  { date: "2027-03-27", kind: "holiday", label: "耶穌受難節翌日" },
+  { date: "2027-03-29", kind: "holiday", label: "復活節星期一" },
+  { date: "2027-04-05", kind: "holiday", label: "清明節" },
+  { date: "2027-05-01", kind: "holiday", label: "勞動節" },
+  { date: "2027-05-13", kind: "holiday", label: "佛誕" },
+  { date: "2027-06-09", kind: "holiday", label: "端午節" },
+  { date: "2027-07-01", kind: "holiday", label: "香港特別行政區成立紀念日" },
+  { date: "2027-09-16", kind: "holiday", label: "中秋節翌日" },
+  { date: "2027-10-01", kind: "holiday", label: "國慶日" },
+  { date: "2027-10-08", kind: "holiday", label: "重陽節" },
+  { date: "2027-12-25", kind: "holiday", label: "聖誕節" },
+  { date: "2027-12-27", kind: "holiday", label: "聖誕節後第一個周日" },
+  { date: "2027-01-16", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-01-17", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-04-24", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-04-25", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-07-10", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-07-11", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-10-23", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-10-24", kind: "cpt", label: "CPT 上課", detail: "NSCA Certified Personal Trainer · 09:00–18:00 全日" },
+  { date: "2027-01-22", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-01-23", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-01-24", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-04-03", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-04-04", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-04-05", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-07-23", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-07-24", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-07-25", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-10-01", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-10-02", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+  { date: "2027-10-03", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
+];
 const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
 const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
@@ -181,6 +243,93 @@ function eventsForDate(dateKey) {
   return eventsForPosts(filteredPosts()).filter((event) => event.date === dateKey);
 }
 
+function sortMarkers(list) {
+  return [...list].sort(
+    (a, b) =>
+      a.date.localeCompare(b.date) ||
+      MARKER_KIND_ORDER[a.kind] - MARKER_KIND_ORDER[b.kind]
+  );
+}
+
+function markersForDate(dateKey) {
+  return sortMarkers(MARKERS.filter((marker) => marker.date === dateKey));
+}
+
+function markersInMonth(year, month) {
+  return sortMarkers(
+    MARKERS.filter((marker) => {
+      const date = parseDate(marker.date);
+      return date.getFullYear() === year && date.getMonth() === month;
+    })
+  );
+}
+
+function markerKindMeta(kind) {
+  return MARKER_KINDS[kind] || { label: kind, short: kind };
+}
+
+function markerChipHtml(marker) {
+  const kind = markerKindMeta(marker.kind);
+  const title = marker.detail
+    ? `${kind.label} · ${marker.label} · ${marker.detail}`
+    : `${kind.label} · ${marker.label}`;
+  return `
+    <div class="chip marker ${marker.kind}" title="${escapeHtml(title)}">
+      <span class="mark ${marker.kind}"></span>
+      <span>
+        <span class="label">
+          <span class="label-short">${escapeHtml(kind.short)}</span>
+          <span class="label-full">${escapeHtml(marker.label)}</span>
+        </span>
+        <span class="meta">${escapeHtml(kind.label)}</span>
+      </span>
+    </div>
+  `;
+}
+
+function markerAgendaItem(marker) {
+  const kind = markerKindMeta(marker.kind);
+  return `
+    <li>
+      <button type="button" data-date="${marker.date}">
+        <time><i class="dot ${marker.kind}"></i>${formatLong(marker.date)} · ${escapeHtml(kind.label)}</time>
+        <div class="name">${escapeHtml(marker.label)}</div>
+        <div class="sub">${escapeHtml(marker.detail || kind.label)}</div>
+      </button>
+    </li>
+  `;
+}
+
+function eventAgendaItem(event) {
+  return `
+    <li>
+      <button type="button" data-id="${event.id}">
+        <time><i class="dot ${event.phase}"></i>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}${event.edited ? " · 已改" : ""}</time>
+        <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
+        <div class="sub">${escapeHtml(event.campaignName)}</div>
+      </button>
+    </li>
+  `;
+}
+
+function markerFlagsHtml(markers) {
+  if (!markers.length) return "";
+  return `<span class="day-flags">${markers
+    .map((marker) => {
+      const kind = markerKindMeta(marker.kind);
+      const title = marker.detail
+        ? `${kind.label} · ${marker.label} · ${marker.detail}`
+        : `${kind.label} · ${marker.label}`;
+      return `<span class="flag ${marker.kind}" title="${escapeHtml(title)}">${escapeHtml(kind.short)}</span>`;
+    })
+    .join("")}</span>`;
+}
+
+function dayMarkerClasses(markers) {
+  const kinds = [...new Set(markers.map((marker) => marker.kind))];
+  return kinds.map((kind) => `day-${kind}`).join(" ");
+}
+
 function updateViewVisibility() {
   const calendarLayout = document.getElementById("calendar-layout");
   const tableLayout = document.getElementById("table-layout");
@@ -351,17 +500,23 @@ function renderCalendar() {
       const outside = date.getMonth() !== state.month;
       const isToday = key === iso(TODAY);
       const dayEvents = byDate[key] || [];
+      const dayMarkers = markersForDate(key);
       const compact = isCompact();
       const visible = compact ? dayEvents.slice(0, 2) : dayEvents;
       const overflow = dayEvents.length - visible.length;
+      const markerClass = dayMarkerClasses(dayMarkers);
       return `
-        <article class="day${outside ? " outside" : ""}${isToday ? " today" : ""}${dayEvents.length ? " has-events" : ""}" data-date="${key}">
+        <article class="day${outside ? " outside" : ""}${isToday ? " today" : ""}${dayEvents.length || dayMarkers.length ? " has-events" : ""}${markerClass ? ` ${markerClass}` : ""}" data-date="${key}">
           <div class="date-num">
-            <span>${date.getDate()}</span>
+            <span class="date-num-left">
+              <span>${date.getDate()}</span>
+              ${markerFlagsHtml(dayMarkers)}
+            </span>
             ${isToday ? "<span class=\"today-tag\">Today</span>" : ""}
             ${compact && dayEvents.length ? `<span class="day-count">${dayEvents.length}</span>` : ""}
           </div>
           <div class="events">
+            ${compact ? "" : dayMarkers.map(markerChipHtml).join("")}
             ${visible
               .map(
                 (event) => `
@@ -397,26 +552,26 @@ function renderAgenda(events) {
     const date = parseDate(event.date);
     return date.getFullYear() === state.year && date.getMonth() === state.month;
   });
+  const monthMarks = markersInMonth(state.year, state.month);
 
   const list = document.getElementById("agenda");
-  if (!monthEvents.length) {
+  if (!monthEvents.length && !monthMarks.length) {
     list.innerHTML = `<li class="empty">這個月沒有對應日期。</li>`;
     return;
   }
 
-  list.innerHTML = monthEvents
-    .map(
-      (event) => `
-      <li>
-        <button type="button" data-id="${event.id}">
-          <time><i class="dot ${event.phase}"></i>${formatLong(event.date)} · ${escapeHtml(event.phaseLabel)}${event.edited ? " · 已改" : ""}</time>
-          <div class="name">${escapeHtml(postLabel(event))} · ${escapeHtml(event.title)}</div>
-          <div class="sub">${escapeHtml(event.campaignName)}</div>
-        </button>
-      </li>
-    `
-    )
-    .join("");
+  const items = [
+    ...monthMarks.map((marker) => ({
+      sort: `${marker.date}-0${MARKER_KIND_ORDER[marker.kind]}`,
+      html: markerAgendaItem(marker),
+    })),
+    ...monthEvents.map((event) => ({
+      sort: `${event.date}-9${PHASE_ORDER[event.phase] ?? 9}`,
+      html: eventAgendaItem(event),
+    })),
+  ].sort((a, b) => a.sort.localeCompare(b.sort));
+
+  list.innerHTML = items.map((item) => item.html).join("");
 }
 
 function showDrawer(html) {
@@ -459,12 +614,29 @@ function openDrawer(postId) {
 
 function openDay(dateKey) {
   const events = eventsForDate(dateKey);
-  if (!events.length) return;
+  const markers = markersForDate(dateKey);
+  if (!events.length && !markers.length) return;
 
-  showDrawer(`
-    <p class="kicker">當日排程</p>
-    <h2>${formatLong(dateKey)}</h2>
-    <ol class="agenda">
+  const markerBlock = markers.length
+    ? `<div class="day-markers">${markers
+        .map((marker) => {
+          const kind = markerKindMeta(marker.kind);
+          return `
+            <div class="day-marker ${marker.kind}">
+              <i class="dot ${marker.kind}"></i>
+              <div>
+                <b>${escapeHtml(kind.label)}</b>
+                <span>${escapeHtml(marker.label)}</span>
+                ${marker.detail ? `<span class="sub">${escapeHtml(marker.detail)}</span>` : ""}
+              </div>
+            </div>
+          `;
+        })
+        .join("")}</div>`
+    : "";
+
+  const eventList = events.length
+    ? `<ol class="agenda">
       ${events
         .map(
           (event) => `
@@ -478,7 +650,14 @@ function openDay(dateKey) {
       `
         )
         .join("")}
-    </ol>
+    </ol>`
+    : "";
+
+  showDrawer(`
+    <p class="kicker">當日排程</p>
+    <h2>${formatLong(dateKey)}</h2>
+    ${markerBlock}
+    ${eventList}
   `);
 }
 
