@@ -102,12 +102,14 @@ def parse_reel(name):
             "rawTitle": title,
         }
     spaced = re.match(r"^R(\d+)\s+(.+)$", text, re.I)
-    if not spaced:
-        return None
-    title = spaced.group(2).strip()
-    if re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
-        return None
-    return {"number": int(spaced.group(1)), "episode": None, "rawTitle": title}
+    if spaced:
+        title = spaced.group(2).strip()
+        if re.search(r"^shooting\b|photo\s+shooting|script\s+share", title, re.I):
+            return None
+        return {"number": int(spaced.group(1)), "episode": None, "rawTitle": title}
+    if re.search(r"NSCA Calendar 2027", text, re.I):
+        return {"number": 15, "episode": None, "rawTitle": text}
+    return None
 
 
 def display_title(raw):
@@ -218,7 +220,11 @@ def build_post(task, source):
         notes.append("Description 空白。")
     if not shooting_from_text and shooting:
         notes.append(f"拍攝日來自 Remarks：{remarks}")
-    if not submission_from_text and submission:
+    if "NSCA Calendar 2027" in reel["rawTitle"] and not publish and submission:
+        publish = submission
+        submission = ""
+        notes.append("發佈日來自 ClickUp Due date。")
+    elif not submission_from_text and submission:
         notes.append("交片日來自 Due date。")
     notes.extend(year_notes)
     ad = re.search(r"落廣告[^\n]*", text)
