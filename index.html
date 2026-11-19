@@ -15,7 +15,17 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Newsreader:opsz,wght@16..72,500;16..72,600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=c0102-35" />
+    <script>
+      window.CALENDAR_V = new URLSearchParams(location.search).get("v") || "c0102-36";
+      window.CALENDAR_BUST = Date.now();
+      document.write(
+        '<link rel="stylesheet" href="styles.css?v=' +
+          window.CALENDAR_V +
+          "&t=" +
+          window.CALENDAR_BUST +
+          '" />'
+      );
+    </script>
   </head>
   <body>
     <div class="app">
@@ -99,11 +109,11 @@
         <span class="legend-item"><i class="dot holiday"></i>香港公眾假期</span>
         <span class="legend-item"><i class="dot cpt"></i>CPT 工作坊</span>
         <span class="legend-item"><i class="dot cscs"></i>CSCS 工作坊</span>
-        <span class="legend-note">01 顯示 R5 起（含 EP）。02 含 EP1 / EP2。日期以 ClickUp 為主檔；可在月曆上拖動色塊改期。紅色為香港公眾假期，綠色為 CPT 上課日，橙色為 CSCS 上課日。</span>
+        <span class="legend-note">01 顯示 R5 起（含 EP）。02 含 EP1 / EP2。日期以 ClickUp 為主檔；可在月曆上拖動色塊改期，改動會同步到這個公開連結。紅色為香港公眾假期，綠色為 CPT 上課日，橙色為 CSCS 上課日。</span>
       </div>
 
       <div class="edit-bar" id="edit-bar">
-        <p class="edit-copy" id="edit-copy">在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動只存在這個瀏覽器，不會寫回 ClickUp。</p>
+        <p class="edit-copy" id="edit-copy">在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動會同步到這個公開連結，所有人重新整理後都會看到。不會寫回 ClickUp。</p>
         <div class="edit-actions">
           <button type="button" class="today-btn" id="undo-move" hidden>復原上一步</button>
           <button type="button" class="today-btn" id="reset-dates" hidden>還原 ClickUp 日子</button>
@@ -160,8 +170,12 @@
     </aside>
 
     <script>
-      document.write('<script src="data.js?v=c0102-35&t=' + Date.now() + '"><\/script>');
+      document.write(
+        '<script src="data.js?v=' + window.CALENDAR_V + "&t=" + Date.now() + '"><\/script>'
+      );
+      document.write(
+        '<script src="app.js?v=' + window.CALENDAR_V + "&t=" + Date.now() + '"><\/script>'
+      );
     </script>
-    <script src="app.js?v=c0102-35"></script>
   </body>
 </html>

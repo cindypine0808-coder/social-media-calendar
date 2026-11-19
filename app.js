@@ -70,6 +70,8 @@ const MARKERS = [
   { date: "2027-10-03", kind: "cscs", label: "CSCS 上課", detail: "NSCA Certified Strength & Conditioning Specialist · 09:00–18:00 全日" },
 ];
 const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
+const OVERRIDES_FILE = "overrides.json";
+const SHARE_CONFIG_FILE = "share-config.json";
 const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
   year: TODAY.getFullYear(),
@@ -83,6 +85,10 @@ let posts = SOURCE_POSTS.map((post) => ({ ...post }));
 let lastMove = null;
 let skipClick = false;
 let toastTimer = 0;
+let shareConfig = null;
+let publishTimer = 0;
+let publishState = "idle";
+let publishError = "";
 
 function parseDate(iso) {
   const [year, month, day] = iso.split("-").map(Number);
@@ -146,17 +152,149 @@ function phaseLabel(key) {
   return PHASES.find((phase) => phase.key === key)?.label || key;
 }
 
-function loadOverrides() {
+function emptyRecord() {
+  return { updatedAt: "", dates: {} };
+}
+
+function asRecord(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return emptyRecord();
+  if (raw.dates && typeof raw.dates === "object" && !Array.isArray(raw.dates)) {
+    return { updatedAt: raw.updatedAt || "", dates: raw.dates };
+  }
+  return { updatedAt: "", dates: raw };
+}
+
+function cacheBust(url) {
+  const glue = url.includes("?") ? "&" : "?";
+  return `${url}${glue}t=${Date.now()}`;
+}
+
+function readRecord() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
+    return asRecord(JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"));
   } catch {
-    return {};
+    return emptyRecord();
   }
 }
 
+function writeRecord(record, { publish = true } = {}) {
+  const next = {
+    updatedAt: record.updatedAt || new Date().toISOString(),
+    dates: record.dates || {},
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  if (publish) schedulePublish(next);
+}
+
+function loadOverrides() {
+  return readRecord().dates;
+}
+
 function saveOverrides(overrides) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+  writeRecord({ updatedAt: new Date().toISOString(), dates: overrides });
+}
+
+function mergeRecords(base, overlay) {
+  return {
+    updatedAt:
+      (overlay.updatedAt || "") >= (base.updatedAt || "")
+        ? overlay.updatedAt || base.updatedAt || ""
+        : base.updatedAt || overlay.updatedAt || "",
+    dates: { ...base.dates, ...overlay.dates },
+  };
+}
+
+async function fetchJson(url) {
+  const response = await fetch(cacheBust(url), { cache: "no-store" });
+  if (!response.ok) throw new Error(`${response.status}`);
+  return response.json();
+}
+
+async function loadShareConfig() {
+  shareConfig = await fetchJson(SHARE_CONFIG_FILE);
+  return shareConfig;
+}
+
+function shareItemUrl(config = shareConfig) {
+  if (!config?.endpoint || !config?.itemId) return "";
+  return `${config.endpoint.replace(/\/$/, "")}/${config.itemId}`;
+}
+
+async function fetchLiveRecord() {
+  const config = shareConfig || (await loadShareConfig());
+  const url = shareItemUrl(config);
+  if (!url) return emptyRecord();
+  return asRecord(await fetchJson(url));
+}
+
+async function publishShared(record) {
+  const payload = {
+    updatedAt: record.updatedAt || new Date().toISOString(),
+    dates: record.dates || {},
+  };
+  const config = shareConfig || (await loadShareConfig());
+  const url = shareItemUrl(config);
+  if (!url) throw new Error("missing share endpoint");
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`${response.status}`);
+  return payload;
+}
+
+function schedulePublish(record) {
+  window.clearTimeout(publishTimer);
+  publishState = "saving";
+  publishError = "";
+  renderEditBar();
+  renderStats();
+  publishTimer = window.setTimeout(async () => {
+    try {
+      await publishShared(record);
+      publishState = "saved";
+      publishError = "";
+    } catch (error) {
+      publishState = "error";
+      publishError = error?.message || "sync failed";
+    }
+    renderEditBar();
+    renderStats();
+  }, 400);
+}
+
+async function syncSharedOverrides() {
+  const local = readRecord();
+  let shared = emptyRecord();
+  try {
+    shared = asRecord(await fetchJson(OVERRIDES_FILE));
+  } catch {
+    /* GitHub Pages copy is a fallback */
+  }
+  try {
+    const live = await fetchLiveRecord();
+    if ((live.updatedAt || "") >= (shared.updatedAt || "")) shared = live;
+  } catch {
+    /* keep file copy */
+  }
+
+  const localHasDates = Object.keys(local.dates || {}).length > 0;
+  const sharedHasDates = Object.keys(shared.dates || {}).length > 0;
+  let next = shared;
+  if (!local.updatedAt && localHasDates) {
+    next = mergeRecords(shared, local);
+    next.updatedAt = new Date().toISOString();
+    writeRecord(next, { publish: true });
+  } else if ((local.updatedAt || "") > (shared.updatedAt || "") && localHasDates) {
+    next = local;
+    writeRecord(next, { publish: true });
+  } else if (sharedHasDates || shared.updatedAt) {
+    next = shared;
+    writeRecord(next, { publish: false });
+  }
+  applyOverrides();
+  renderAll();
 }
 
 function applyOverrides() {
@@ -394,8 +532,18 @@ function renderStats() {
     <div class="stat"><b>${shooting}</b><span>有拍攝日</span></div>
   `;
   const local = overrideCount();
-  document.getElementById("sync-status").textContent = local
-    ? `${PLAN.source} · 這個瀏覽器已改 ${local} 個日子`
+  const syncNote =
+    publishState === "saving"
+      ? "正在公開同步改期"
+      : publishState === "saved"
+        ? "已同步到公開日曆，所有人重新整理即可看到"
+        : publishState === "error"
+          ? `公開同步失敗${publishError ? `（${publishError}）` : ""}`
+          : local
+            ? `已改 ${local} 個日子`
+            : "";
+  document.getElementById("sync-status").textContent = syncNote
+    ? `${PLAN.source} · ${syncNote}`
     : PLAN.source;
 }
 
@@ -410,8 +558,8 @@ function renderEditBar() {
   resetBtn.hidden = !count;
   downloadBtn.hidden = !count;
   copy.textContent = count
-    ? `已在這個瀏覽器改了 ${count} 個日子。拖動色塊可繼續改期；這些改動不會寫回 ClickUp。`
-    : "在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動只存在這個瀏覽器，不會寫回 ClickUp。";
+    ? `已改 ${count} 個日子。拖動色塊可繼續改期；改動會同步到這個公開連結，所有人重新整理後都會看到。不會寫回 ClickUp。`
+    : "在月曆上把色塊拖到其他日子，即可改拍攝日 / 交片日 / 發佈日。改動會同步到這個公開連結，所有人重新整理後都會看到。不會寫回 ClickUp。";
 }
 
 function renderPostList() {
@@ -726,14 +874,14 @@ function undoMove() {
 
 function resetDates() {
   if (!overrideCount()) return;
-  if (!window.confirm("還原這個瀏覽器裡所有已改的日子，回到目前 ClickUp 同步的日期？")) {
+  if (!window.confirm("還原所有已改的日子，回到目前 ClickUp 同步的日期？這個公開連結上的人重新整理後也會看到還原後的日子。")) {
     return;
   }
-  localStorage.removeItem(STORAGE_KEY);
   lastMove = null;
+  writeRecord({ updatedAt: new Date().toISOString(), dates: {} });
   applyOverrides();
   renderAll();
-  showToast("已還原 ClickUp 日子");
+  showToast("已還原 ClickUp 日子，並同步到公開日曆");
 }
 
 function downloadData() {
@@ -1023,3 +1171,4 @@ function bind() {
 applyOverrides();
 bind();
 renderAll();
+syncSharedOverrides();
