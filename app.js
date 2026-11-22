@@ -72,6 +72,7 @@ const MARKERS = [
 const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
 const OVERRIDES_FILE = "overrides.json";
 const SHARE_CONFIG_FILE = "share-config.json";
+const PUBLIC_CUTOVER = "2026-11-23T00:00:00.000Z";
 const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
   year: TODAY.getFullYear(),
@@ -204,10 +205,19 @@ function mergeRecords(base, overlay) {
   };
 }
 
-async function fetchJson(url) {
-  const response = await fetch(cacheBust(url), { cache: "no-store" });
-  if (!response.ok) throw new Error(`${response.status}`);
-  return response.json();
+async function fetchJson(url, timeoutMs = 4000) {
+  const controller = typeof AbortController === "function" ? new AbortController() : null;
+  const timer = window.setTimeout(() => controller?.abort(), timeoutMs);
+  try {
+    const response = await fetch(cacheBust(url), {
+      cache: "no-store",
+      signal: controller?.signal,
+    });
+    if (!response.ok) throw new Error(`${response.status}`);
+    return response.json();
+  } finally {
+    window.clearTimeout(timer);
+  }
 }
 
 async function loadShareConfig() {
@@ -227,14 +237,33 @@ async function fetchLiveRecord() {
   return asRecord(await fetchJson(url));
 }
 
+function pageSharedRecord() {
+  return asRecord(window.CALENDAR_SHARED_OVERRIDES);
+}
+
+function stripStaleCampaign03(record) {
+  if ((record.updatedAt || "") >= PUBLIC_CUTOVER) return record;
+  const dates = { ...(record.dates || {}) };
+  SOURCE_POSTS.forEach((post) => {
+    if (post.campaign !== "03" || !dates[post.id]) return;
+    const extra = { ...dates[post.id] };
+    delete extra.submission;
+    delete extra.publish;
+    if (Object.keys(extra).length) dates[post.id] = extra;
+    else delete dates[post.id];
+  });
+  return { ...record, dates };
+}
+
 async function publishShared(record) {
   const payload = {
     updatedAt: record.updatedAt || new Date().toISOString(),
     dates: record.dates || {},
   };
-  const config = shareConfig || (await loadShareConfig());
+  window.CALENDAR_SHARED_OVERRIDES = payload;
+  const config = shareConfig || (await loadShareConfig().catch(() => shareConfig));
   const url = shareItemUrl(config);
-  if (!url) throw new Error("missing share endpoint");
+  if (!url) return payload;
   const response = await fetch(url, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -265,32 +294,35 @@ function schedulePublish(record) {
 }
 
 async function syncSharedOverrides() {
-  const local = readRecord();
-  let shared = emptyRecord();
+  const local = stripStaleCampaign03(readRecord());
+  let shared = pageSharedRecord();
   try {
-    shared = asRecord(await fetchJson(OVERRIDES_FILE));
+    const file = asRecord(await fetchJson(OVERRIDES_FILE));
+    if ((file.updatedAt || "") >= (shared.updatedAt || "")) shared = file;
   } catch {
-    /* GitHub Pages copy is a fallback */
+    /* same-origin copy is optional */
   }
   try {
-    const live = await fetchLiveRecord();
-    if ((live.updatedAt || "") >= (shared.updatedAt || "")) shared = live;
+    const config = await loadShareConfig();
+    if (shareItemUrl(config)) {
+      const live = await fetchLiveRecord();
+      if ((live.updatedAt || "") >= (shared.updatedAt || "")) shared = live;
+    }
   } catch {
-    /* keep file copy */
+    /* keep GitHub Pages copy */
   }
 
   const localHasDates = Object.keys(local.dates || {}).length > 0;
   const sharedHasDates = Object.keys(shared.dates || {}).length > 0;
   let next = shared;
-  if (!local.updatedAt && localHasDates) {
-    next = mergeRecords(shared, local);
-    next.updatedAt = new Date().toISOString();
-    writeRecord(next, { publish: true });
-  } else if ((local.updatedAt || "") > (shared.updatedAt || "") && localHasDates) {
+  if ((local.updatedAt || "") > (shared.updatedAt || "") && localHasDates) {
     next = local;
     writeRecord(next, { publish: true });
   } else if (sharedHasDates || shared.updatedAt) {
     next = shared;
+    writeRecord(next, { publish: false });
+  } else if (localHasDates) {
+    next = local;
     writeRecord(next, { publish: false });
   }
   applyOverrides();

@@ -9,6 +9,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Marketing Campaign · Content Calendar</title>
+    <link rel="canonical" href="https://cindypine0808-coder.github.io/social-media-calendar/?v=c0102" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,15 +17,19 @@
       rel="stylesheet"
     />
     <script>
-      window.CALENDAR_V = new URLSearchParams(location.search).get("v") || "c0102-36";
+      (function () {
+        var params = new URLSearchParams(location.search);
+        if (params.get("v") === "c0102") return;
+        params.set("v", "c0102");
+        location.replace(location.pathname + "?" + params.toString() + location.hash);
+      })();
+      window.CALENDAR_V = "c0102";
       window.CALENDAR_BUST = Date.now();
-      document.write(
-        '<link rel="stylesheet" href="styles.css?v=' +
-          window.CALENDAR_V +
-          "&t=" +
-          window.CALENDAR_BUST +
-          '" />'
-      );
+    </script>
+    <link rel="stylesheet" id="calendar-css" href="styles.css?v=c0102" />
+    <script>
+      document.getElementById("calendar-css").href =
+        "styles.css?v=" + window.CALENDAR_V + "&t=" + window.CALENDAR_BUST;
     </script>
   </head>
   <body>
@@ -37,7 +42,7 @@
             <ul class="campaign-summary">
               <li>Campaign 01: What's SSF（預計最後一支影片的發佈日：3 Dec）</li>
               <li>Campaign 02: NSCA Promotion（預計最後一支影片的發佈日：23 Feb 2027）</li>
-              <li>Campaign 03: Jason IP（預計最後一支影片的發佈日：23 Feb 2027）</li>
+              <li>Campaign 03: Jason IP（預計最後一支影片的發佈日：23 Mar 2027）</li>
             </ul>
             <span class="muted" id="sync-status">Source: ClickUp public tasks</span>
           </div>
@@ -170,12 +175,27 @@
     </aside>
 
     <script>
-      document.write(
-        '<script src="data.js?v=' + window.CALENDAR_V + "&t=" + Date.now() + '"><\/script>'
-      );
-      document.write(
-        '<script src="app.js?v=' + window.CALENDAR_V + "&t=" + Date.now() + '"><\/script>'
-      );
+      (function () {
+        var v = window.CALENDAR_V || "c0102";
+        var t = Date.now();
+        function loadScript(src) {
+          return new Promise(function (resolve, reject) {
+            var script = document.createElement("script");
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+          });
+        }
+        loadScript("share.js?v=" + v + "&t=" + t)
+          .catch(function () {})
+          .then(function () {
+            return loadScript("data.js?v=" + v + "&t=" + t);
+          })
+          .then(function () {
+            return loadScript("app.js?v=" + v + "&t=" + t);
+          });
+      })();
     </script>
   </body>
 </html>

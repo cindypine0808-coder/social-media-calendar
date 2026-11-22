@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OVERRIDES = ROOT / "overrides.json"
 CONFIG = ROOT / "share-config.json"
+SHARE_JS = ROOT / "share.js"
 UA = "ssf-calendar-persist/1.0"
 
 
@@ -41,6 +42,14 @@ def load_json(path: Path, default):
 
 def save_json(path: Path, obj) -> None:
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n")
+
+
+def save_share_js(obj) -> None:
+    SHARE_JS.write_text(
+        "window.CALENDAR_SHARED_OVERRIDES = "
+        + json.dumps(obj, ensure_ascii=False, indent=2)
+        + ";\n"
+    )
 
 
 def as_record(raw) -> dict:
@@ -92,19 +101,7 @@ def main() -> None:
     if not chosen.get("updatedAt"):
         chosen["updatedAt"] = now_iso() if chosen.get("dates") else ""
 
-    if not live_ok:
-        endpoint = allocate_endpoint()
-        _, body = request(
-            endpoint,
-            method="POST",
-            payload={"updatedAt": chosen.get("updatedAt") or "", "dates": chosen.get("dates") or {}},
-        )
-        created = json.loads(body)
-        item_id = created["_id"]
-        config = {"endpoint": endpoint, "itemId": item_id}
-        save_json(CONFIG, config)
-        print(f"rotated share endpoint to {endpoint}/{item_id}")
-    elif (file_record.get("updatedAt") or "") > (live_record.get("updatedAt") or ""):
+    if live_ok and (file_record.get("updatedAt") or "") > (live_record.get("updatedAt") or ""):
         request(
             f"{endpoint}/{item_id}",
             method="PUT",
@@ -112,10 +109,9 @@ def main() -> None:
         )
         print("updated live share from overrides.json")
 
-    save_json(
-        OVERRIDES,
-        {"updatedAt": chosen.get("updatedAt") or "", "dates": chosen.get("dates") or {}},
-    )
+    public = {"updatedAt": chosen.get("updatedAt") or "", "dates": chosen.get("dates") or {}}
+    save_json(OVERRIDES, public)
+    save_share_js(public)
     print(f"stored {len(chosen.get('dates') or {})} date overrides")
 
 

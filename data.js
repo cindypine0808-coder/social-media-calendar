@@ -1,9 +1,9 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · 2026/11/06 19:10 · local edits 6/11/2026 下午7:26:05 · C02 R15 dates 15/11/2026",
+  "source": "ClickUp auto-sync · 2026/11/06 19:10 · local edits 6/11/2026 下午7:26:05 · C02 R15 dates 15/11/2026 · C03 +1 month 23/11/2026",
   "timezone": "Asia/Hong_Kong",
-  "dateRange": "2026-09-21 – 2027-02-23",
+  "dateRange": "2026-09-21 – 2027-03-23",
   "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。月曆另標香港公眾假期及 2027 NSCA CPT / CSCS 上課日。",
   "campaigns": [
     {
@@ -457,8 +457,8 @@ const PLAN = {
       "purpose": "讓追蹤者更清楚自己要追蹤的這個人，",
       "hook": "和我一起打開，專屬於你的「微步生活」。（呼應small",
       "shooting": "2026-10-29",
-      "submission": "2026-12-08",
-      "publish": "2027-01-05",
+      "submission": "2027-01-08",
+      "publish": "2027-02-05",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76hc/P7Z472HHVVY56R8"
     },
@@ -473,8 +473,8 @@ const PLAN = {
       "purpose": "帶出SSF初期已經會讓學生知道這個重要的概念、",
       "hook": "點樣評估自己做gym有無成效？",
       "shooting": "2026-11-25",
-      "submission": "2026-12-15",
-      "publish": "2027-01-07",
+      "submission": "2027-01-15",
+      "publish": "2027-02-07",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76ht/P7Z472HHVVY56R8"
     },
@@ -489,8 +489,8 @@ const PLAN = {
       "purpose": "從專業角度分享，大部份學生需要強化",
       "hook": "有無覺得自己通常頸部以下嘅位置，都會",
       "shooting": "2026-11-25",
-      "submission": "2026-12-16",
-      "publish": "2027-01-12",
+      "submission": "2027-01-16",
+      "publish": "2027-02-12",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76hv/P7Z472HHVVY56R8"
     },
@@ -505,8 +505,8 @@ const PLAN = {
       "purpose": "初步等學生有概念，知道點樣先實踐到訓練目標",
       "hook": "你心目中嘅第一堂PT，有無一個標準，或者期望？",
       "shooting": "2026-11-25",
-      "submission": "2026-12-22",
-      "publish": "2027-01-14",
+      "submission": "2027-01-22",
+      "publish": "2027-02-14",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76mr/P7Z472HHVVY56R8"
     },
@@ -521,8 +521,8 @@ const PLAN = {
       "purpose": "帶出Jason平日如何訓練運動員，例如課前了解學生",
       "hook": "欖球運動員要成日係球場撞黎撞去，",
       "shooting": "2026-11-27",
-      "submission": "2026-12-23",
-      "publish": "2027-01-19",
+      "submission": "2027-01-23",
+      "publish": "2027-02-19",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76mt/P7Z472HHVVY56R8"
     },
@@ -537,8 +537,8 @@ const PLAN = {
       "purpose": "帶出「跌倒」對長者的影響，",
       "hook": "點解10個長者入面，就會有6個以上患有",
       "shooting": "2026-12-04",
-      "submission": "2026-12-29",
-      "publish": "2027-01-26",
+      "submission": "2027-01-29",
+      "publish": "2027-02-26",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76mv/P7Z472HHVVY56R8"
     },
@@ -553,8 +553,8 @@ const PLAN = {
       "purpose": "分享Reels 6後，緊接講解一個可以放鬆的呼吸練習。",
       "hook": "今日用1分鐘教大家做一個簡單，",
       "shooting": "2026-12-04",
-      "submission": "2026-12-30",
-      "publish": "2027-02-02",
+      "submission": "2027-01-30",
+      "publish": "2027-03-02",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76n1/P7Z472HHVVY56R8"
     },
@@ -569,8 +569,8 @@ const PLAN = {
       "purpose": "Quick Review 3個訓練迷思，Jason",
       "hook": "點解可以食咁多雞蛋？膝頭可以過腳掌？",
       "shooting": "2026-12-11",
-      "submission": "2027-01-05",
-      "publish": "2027-02-09",
+      "submission": "2027-02-05",
+      "publish": "2027-03-09",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76n4/P7Z472HHVVY56R8"
     },
@@ -585,8 +585,8 @@ const PLAN = {
       "purpose": "分享一個「有計劃」的人是如何生活的。例如",
       "hook": "想做嘅事情一大堆，點樣先至真正可以實踐到？",
       "shooting": "2026-12-11",
-      "submission": "2027-01-06",
-      "publish": "2027-02-16",
+      "submission": "2027-02-06",
+      "publish": "2027-03-16",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76nb/P7Z472HHVVY56R8"
     },
@@ -601,8 +601,8 @@ const PLAN = {
       "purpose": "分享係繁忙嘅生活中「停一停」嘅重要性，",
       "hook": "曾經試過工作到差啲暈低，只此之後，",
       "shooting": "2026-12-18",
-      "submission": "2027-01-12",
-      "publish": "2027-02-23",
+      "submission": "2027-02-12",
+      "publish": "2027-03-23",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e76nc/P7Z472HHVVY56R8"
     }

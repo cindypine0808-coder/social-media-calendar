@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /leilei-working-space/
+Disallow: /taipei-3d2n/
+Disallow: /????/
+Sitemap: https://cindypine0808-coder.github.io/social-media-calendar/?v=c0102
