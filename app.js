@@ -72,7 +72,7 @@ const MARKERS = [
 const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
 const OVERRIDES_FILE = "overrides.json";
 const SHARE_CONFIG_FILE = "share-config.json";
-const PUBLIC_CUTOVER = "2026-11-23T00:00:00.000Z";
+const PUBLIC_CUTOVER = "2026-11-24T12:00:00.000Z";
 const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
   year: TODAY.getFullYear(),
@@ -247,6 +247,8 @@ function stripStaleCampaign03(record) {
   SOURCE_POSTS.forEach((post) => {
     if (post.campaign !== "03" || !dates[post.id]) return;
     const extra = { ...dates[post.id] };
+    delete extra.shooting;
+    delete extra.shootingDates;
     delete extra.submission;
     delete extra.publish;
     if (Object.keys(extra).length) dates[post.id] = extra;
