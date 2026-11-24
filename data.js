@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · C03 reschedule 24/11/2026 · shoot from 25/1/2027, submit Feb, publish Wed/Sun from 17/2/2027",
+  "source": "ClickUp auto-sync · public drag-drop 24/11/2026 · C03 reschedule 24/11/2026",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2027-03-21",
   "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。月曆另標香港公眾假期及 2027 NSCA CPT / CSCS 上課日。",
@@ -54,7 +54,7 @@ const PLAN = {
       "hook": "我係 Charlotte，係現役港隊欖球運動員",
       "shooting": "",
       "submission": "2026-10-10",
-      "publish": "2026-11-12",
+      "publish": "2026-11-25",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amc/KELEM2HV2WFDWMA"
     },
@@ -86,7 +86,7 @@ const PLAN = {
       "hook": "Hello 我地係麥生麥太，上年開始跟Jason上PT，係女女介紹我地黎",
       "shooting": "2026-09-25",
       "submission": "2026-10-12",
-      "publish": "2026-11-09",
+      "publish": "2026-12-06",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amd/KELEM2HV2WFDWMA"
     },
@@ -101,8 +101,8 @@ const PLAN = {
       "purpose": "突出翻新前/後設施對比",
       "hook": "30秒帶你睇翻新後Studio轉變",
       "shooting": "2026-10-22",
-      "submission": "2026-11-10",
-      "publish": "2026-11-16",
+      "submission": "2026-12-01",
+      "publish": "2026-12-13",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3ame/KELEM2HV2WFDWMA"
     },
@@ -117,8 +117,8 @@ const PLAN = {
       "purpose": "透過劇場，帶出運動可以解決煩惱及SSF Community Vibe",
       "hook": "《失戀療傷日誌》",
       "shooting": "2026-09-21",
-      "submission": "2026-11-17",
-      "publish": "2026-12-03",
+      "submission": "2027-01-03",
+      "publish": "2027-03-21",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amh/KELEM2HV2WFDWMA"
     },
@@ -198,7 +198,7 @@ const PLAN = {
       "hook": "NSCA嘅認受性係全球",
       "shooting": "2026-09-30",
       "submission": "2026-10-21",
-      "publish": "2026-10-23",
+      "publish": "2027-01-27",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mh/EY1ML8HT56DRLRM"
     },
@@ -213,8 +213,8 @@ const PLAN = {
       "purpose": "讓潛在報名人士認識Pitt",
       "hook": "來自台灣的 Pitt 老師負責CSCS課程......",
       "shooting": "",
-      "submission": "2026-11-19",
-      "publish": "2026-12-08",
+      "submission": "2026-12-20",
+      "publish": "2027-02-14",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mr/EY1ML8HT56DRLRM"
     },
@@ -229,8 +229,8 @@ const PLAN = {
       "purpose": "讓潛在報名人士認識Pitt",
       "hook": "來自台灣的 Pitt 老師負責CSCS課程......",
       "shooting": "",
-      "submission": "2026-12-03",
-      "publish": "2026-12-15",
+      "submission": "2026-12-20",
+      "publish": "2027-02-17",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8eh/EY1ML8HT56DRLRM"
     },
@@ -245,8 +245,8 @@ const PLAN = {
       "purpose": "讓潛在報名人士認識Tina",
       "hook": "今次CPT課程我地邀請到台灣嘅Tina老師......",
       "shooting": "",
-      "submission": "2026-11-19",
-      "publish": "2026-12-01",
+      "submission": "2026-12-20",
+      "publish": "2027-02-10",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mk/EY1ML8HT56DRLRM"
     },
@@ -262,7 +262,7 @@ const PLAN = {
       "hook": "我覺得呢個course最影響到我嘅係......",
       "shooting": "2026-10-10",
       "submission": "2026-10-21",
-      "publish": "2027-01-12",
+      "publish": "2027-02-21",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mw/EY1ML8HT56DRLRM"
     },
@@ -277,8 +277,8 @@ const PLAN = {
       "purpose": "",
       "hook": "",
       "shooting": "2026-11-08",
-      "submission": "2026-11-23",
-      "publish": "2026-11-23",
+      "submission": "2026-11-29",
+      "publish": "2026-12-09",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amg/EY1ML8HT56DRLRM",
       "shootingDates": [
@@ -297,8 +297,8 @@ const PLAN = {
       "purpose": "一條片解答NSCA課程常見問題",
       "hook": "第一次考NSCA教練證照，可唔可以跳過CPT",
       "shooting": "2026-10-28",
-      "submission": "2026-11-21",
-      "publish": "2026-12-22",
+      "submission": "2027-02-10",
+      "publish": "2027-02-24",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26mx/EY1ML8HT56DRLRM"
     },
@@ -313,8 +313,8 @@ const PLAN = {
       "purpose": "一條片解答NSCA課程常見問題",
       "hook": "第一次考NSCA教練證照，可唔可以跳過CPT",
       "shooting": "2026-10-28",
-      "submission": "2026-11-24",
-      "publish": "2026-12-29",
+      "submission": "2027-02-10",
+      "publish": "2027-02-28",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8e3/EY1ML8HT56DRLRM"
     },
@@ -329,8 +329,8 @@ const PLAN = {
       "purpose": "從應屆學生角度解釋NSCA課程的價值",
       "hook": "CSCS刷新咗我對XXX嘅認知（訪問啊妹 @vaniescheung 因應訪問內容再作調整）",
       "shooting": "2026-11-26",
-      "submission": "2026-12-01",
-      "publish": "2027-01-05",
+      "submission": "2026-12-21",
+      "publish": "2027-01-06",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e26n6/EY1ML8HT56DRLRM"
     },
@@ -346,7 +346,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-11-11",
       "submission": "2026-11-10",
-      "publish": "2027-01-21",
+      "publish": "2026-12-16",
       "note": "發佈年已按交片日調整為翌年。 拍攝日已改為月曆佔位（ClickUp 拍攝日已過）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fq/EY1ML8HT56DRLRM"
     },
@@ -362,7 +362,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-11-11",
       "submission": "2026-11-10",
-      "publish": "2027-01-23",
+      "publish": "2026-12-20",
       "note": "發佈年已按交片日調整為翌年。 拍攝日已改為月曆佔位（ClickUp 拍攝日已過）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fr/EY1ML8HT56DRLRM"
     },
@@ -377,8 +377,8 @@ const PLAN = {
       "purpose": "",
       "hook": "",
       "shooting": "2026-11-11",
-      "submission": "2026-11-10",
-      "publish": "2027-01-27",
+      "submission": "2026-11-29",
+      "publish": "2026-12-23",
       "note": "發佈年已按交片日調整為翌年。 拍攝日已改為月曆佔位（ClickUp 拍攝日已過）。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8fu/EY1ML8HT56DRLRM"
     },
@@ -394,7 +394,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-11-08",
       "submission": "2026-12-08",
-      "publish": "2027-02-09",
+      "publish": "2026-12-30",
       "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gg/EY1ML8HT56DRLRM"
     },
@@ -410,7 +410,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-11-08",
       "submission": "2026-12-08",
-      "publish": "2027-02-16",
+      "publish": "2027-01-03",
       "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gh/EY1ML8HT56DRLRM"
     },
@@ -425,8 +425,8 @@ const PLAN = {
       "purpose": "",
       "hook": "",
       "shooting": "2026-11-15",
-      "submission": "2026-12-15",
-      "publish": "2027-02-23",
+      "submission": "2027-02-24",
+      "publish": "2027-03-14",
       "note": "發佈年已按交片日調整為翌年。",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8ec8gn/EY1ML8HT56DRLRM"
     },
@@ -441,8 +441,8 @@ const PLAN = {
       "purpose": "",
       "hook": "",
       "shooting": "2026-11-08",
-      "submission": "2026-11-15",
-      "publish": "2026-11-18",
+      "submission": "2026-11-26",
+      "publish": "2026-11-29",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8eb3yw/EY1ML8HT56DRLRM"
     },
