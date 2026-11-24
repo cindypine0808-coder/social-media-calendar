@@ -86,7 +86,7 @@ const PLAN = {
       "hook": "Hello 我地係麥生麥太，上年開始跟Jason上PT，係女女介紹我地黎",
       "shooting": "2026-09-25",
       "submission": "2026-10-12",
-      "publish": "2026-12-06",
+      "publish": "2026-12-02",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amd/KELEM2HV2WFDWMA"
     },
@@ -102,7 +102,7 @@ const PLAN = {
       "hook": "30秒帶你睇翻新後Studio轉變",
       "shooting": "2026-10-22",
       "submission": "2026-12-01",
-      "publish": "2026-12-13",
+      "publish": "2026-12-09",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3ame/KELEM2HV2WFDWMA"
     },
@@ -278,7 +278,7 @@ const PLAN = {
       "hook": "",
       "shooting": "2026-11-08",
       "submission": "2026-11-29",
-      "publish": "2026-12-09",
+      "publish": "2026-12-13",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amg/EY1ML8HT56DRLRM",
       "shootingDates": [

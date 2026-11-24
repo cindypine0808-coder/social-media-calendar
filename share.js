@@ -1,5 +1,5 @@
 window.CALENDAR_SHARED_OVERRIDES = {
-  "updatedAt": "2026-11-24T11:22:25.000Z",
+  "updatedAt": "2026-11-24T11:26:27.000Z",
   "dates": {
     "z94x8e3amc": {
       "publish": "2026-11-25"
@@ -10,17 +10,17 @@ window.CALENDAR_SHARED_OVERRIDES = {
     },
     "z94x8e3ame": {
       "submission": "2026-12-01",
-      "publish": "2026-12-13"
+      "publish": "2026-12-09"
     },
     "z94x8e3amd": {
-      "publish": "2026-12-06"
+      "publish": "2026-12-02"
     },
     "z94x8eb3yw": {
       "publish": "2026-11-29",
       "submission": "2026-11-26"
     },
     "z94x8e3amg": {
-      "publish": "2026-12-09",
+      "publish": "2026-12-13",
       "submission": "2026-11-29"
     },
     "z94x8e26mk": {
