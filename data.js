@@ -1,7 +1,7 @@
 const PLAN = {
   "title": "Marketing Campaign",
   "subtitle": "What's SSF + NSCA Promotion + Jason IP",
-  "source": "ClickUp auto-sync · public drag-drop 24/11/2026 · C03 reschedule 24/11/2026",
+  "source": "ClickUp auto-sync · public drag-drop 25/11/2026 · C03 reschedule 24/11/2026",
   "timezone": "Asia/Hong_Kong",
   "dateRange": "2026-09-21 – 2027-03-21",
   "note": "Campaign 01 只顯示 R5 起（含 EP）。Campaign 02 含 EP1 / EP2。日期以 ClickUp description 為主；ClickUp 寫 1–2 月但早於交片日的發佈年會調到翌年。月曆另標香港公眾假期及 2027 NSCA CPT / CSCS 上課日。",
@@ -117,7 +117,7 @@ const PLAN = {
       "purpose": "透過劇場，帶出運動可以解決煩惱及SSF Community Vibe",
       "hook": "《失戀療傷日誌》",
       "shooting": "2026-09-21",
-      "submission": "2027-01-03",
+      "submission": "2027-03-04",
       "publish": "2027-03-21",
       "note": "",
       "url": "https://sharing.clickup.com/25623340/t/h/z94x8e3amh/KELEM2HV2WFDWMA"

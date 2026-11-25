@@ -72,7 +72,7 @@ const MARKERS = [
 const STORAGE_KEY = "ssf-calendar-date-overrides-v1";
 const OVERRIDES_FILE = "overrides.json";
 const SHARE_CONFIG_FILE = "share-config.json";
-const PUBLIC_CUTOVER = "2026-11-24T11:31:26.000Z";
+const PUBLIC_CUTOVER = "2026-11-25T12:45:49.000Z";
 const SOURCE_POSTS = PLAN.posts.map((post) => ({ ...post }));
 const state = {
   year: TODAY.getFullYear(),
